@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import { View, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet,View, Text, SafeAreaView, TextInput, TouchableOpacity } from "react-native";
 
 function LoginPage() {
   const navigation = useNavigation();
@@ -8,17 +8,31 @@ function LoginPage() {
   const [UserPassword, onChangeUserpassword] = React.useState("");
 
   return (
-    <SafeAreaView>
-      <Text>LoginPage</Text>
-      <TextInput onChangeText={onChangeUseremail} value={UserEmail} />
+    <SafeAreaView style={styles.container}>
+      <Text style={{fontSize:25, fontWeight:700 , marginBottom:50}}>LoginPage</Text>
+      <TextInput style={{backgroundColor:'gray',textAlign:'left', width:"90%", marginBottom:20, borderRadius:17, padding:8}} placeholder="Email" onChangeText={onChangeUseremail} value={UserEmail} />
 
-      <TextInput onChangeText={onChangeUserpassword} value={UserPassword} />
+      <TextInput style={{textAlign:'left', width:"90%", marginBottom:50, borderRadius:17, padding:8 }} secureTextEntry={true} placeholder="Password" onChangeText={onChangeUserpassword} value={UserPassword} />
 
-      <TouchableOpacity onPress={()=>navigation.push("SignIn")}>
-        <Text>Register</Text>
+      <TouchableOpacity style={{backgroundColor:'maroon',alignItems:'center',justifyContent:'center', height:40, width:200, borderRadius:20, marginBottom:10}} onPress={()=>navigation.push("HomePage")}>
+        <Text style={{textAlign:'center',color:'white', fontWeight:600}}>Login</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={{width:'90%'}} onPress={()=>navigation.push("SignIn")}>
+        <Text style={{fontSize:12}}>Haven't registered yet,<Text style={{color:'red'}}>Click here</Text></Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:'#fd44'
+  },
+});
 
 export default LoginPage;
