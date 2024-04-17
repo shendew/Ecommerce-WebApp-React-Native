@@ -3,9 +3,9 @@ import { StyleSheet, Text, View } from 'react-native';
 // import {LoginPage} from './components/LoginPage';
 import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack'
-import LoginPage from './components/LoginPage';
-import Register from './components/Register';
-import HomePage from './components/HomePage';
+import LoginPage from './Screens/LoginPage';
+import Register from './Screens/Register';
+import HomePage from './Screens/HomePage';
 
 const Stack=createNativeStackNavigator();
 export default function App() {
