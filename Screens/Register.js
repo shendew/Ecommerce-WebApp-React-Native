@@ -5,7 +5,7 @@ export class Register extends Component {
   render() {
     return (
       <View>
-        <Text>Register sahas</Text>
+        <Text>Register</Text>
       </View>
     )
   }
