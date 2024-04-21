@@ -28,6 +28,8 @@ function LoginPage() {
         }}
       >
         <View style={styles.subContainer}>
+
+          <Image source={require("../img/logo.png")} style={{ width:'30%',height:'30%'}}/>
           <Text
             style={{
               fontSize: 25,
@@ -78,7 +80,7 @@ function LoginPage() {
             style={{ width: "90%" }}
             onPress={() => navigation.push("SignIn")}
           >
-            <Text style={{ fontSize: 12 }}>
+            <Text style={{ fontSize: 12 ,color:'maroon'}}>
               Haven't registered yet,
               <Text style={{ fontWeight: 700 }}>Click here</Text>
             </Text>
