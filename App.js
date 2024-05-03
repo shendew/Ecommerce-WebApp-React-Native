@@ -64,7 +64,7 @@ const DrawerNav=()=>{
         //   )
         // }
       }}>
-        <Drawer.Screen name="Home" component={HomePage}/>
+        <Drawer.Screen name="Home" component={Register}/>
         
       </Drawer.Navigator>
   )
