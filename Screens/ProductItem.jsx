@@ -3,14 +3,15 @@ import React from 'react'
 import pIMG  from '../img/productimg.png'
 import addCart from '../img/addtocart.png'
 
-export default function ProductItem() {
-  return (
+
+  export default function ProductItem({ productID , productTitle, productDescription,productPrice,discountPercentage,rating,stock,brand,category,thumbnail,images}) {
+    return (
     <View style={styles.productContainer}>
       
-      <Image source={pIMG} style={{resizeMode: 'cover',width:'100%',}}/> 
-      <Text style={styles.proTitle}>Off Shoulder Short Sleeve - Women</Text>
+      <Image source={{uri:thumbnail}} style={{width:"100%",height:"60%"}}/> 
+      <Text style={styles.proTitle}>{productTitle}</Text>
       <Image source={addCart} style={styles.addC}/>
-      <Text style={styles.proPrice}>LKR : 4300.00</Text>
+      <Text style={styles.proPrice}>{"LKR :"+productPrice+".00"}</Text>
     </View>
   )
 }
@@ -18,7 +19,9 @@ export default function ProductItem() {
 const styles = StyleSheet.create({
     productContainer:{
         width:'48%',
-        height:'33%',
+        // height:'21%',
+        // width:175,
+        height: 300,
         borderWidth:0.7,
         borderColor:'gray',
         justifyContent:'space-between',
