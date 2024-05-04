@@ -17,6 +17,7 @@ export default function App() {
         {/* if you need to create a new screen, create inside Screens folder and add the screen to below lines */}
         <Stack.Screen name='LoginPage' component={LoginPage}/>
         <Stack.Screen name='SignIn' component={Register}/>
+        <Stack.Screen name='Register' component={LoginPage}/>
         <Stack.Screen name='HomePage' component={HomePage}/>
       </Stack.Navigator>
     </NavigationContainer>
