@@ -9,6 +9,9 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import LoginPage from './Screens/LoginPage';
 import Register from './Screens/Register';
 import HomePage from './Screens/HomePage';
+import Cart from './Screens/Cart';
+import Category from './Screens/Category';
+import HomeCaregoryItem from './Screens/HomeCaregoryItem';
 
 
 
@@ -23,24 +26,15 @@ const StackNav=()=>{
       <Stack.Navigator initialRouteName='LoginPage' 
       screenOptions={{
         headerShown:false,
-        statusBarColor: '#0163d2',
-        // headerStyle: {
-        //   backgroundColor: '#0163d2',
-        // },
-        // headerTitle:'E-Buy Lk',
-        // headerTintColor: '#fff',
-        // headerTitleAlign: 'center',
-        // headerLeft:()=>{
-        //   return(
-        //     <Icon style={styles.topIcons} onPress={()=>navigation.dispatch(DrawerActions.openDrawer())} name="bars" size={30} color="#000" />
-        //   )
-        // }
+
       }}
       >
         {/* if you need to create a new screen, create inside Screens folder and add the screen to below lines */}
         <Stack.Screen name='LoginPage' component={LoginPage} />
         <Stack.Screen name='SignIn' component={Register}/>
         <Stack.Screen name='HomePage' component={DrawerNav}/>
+        <Stack.Screen name='CategoryViewPage' component={Category}/>
+        <Stack.Screen name="HomeCategoryItem" component={HomeCaregoryItem}/>
       </Stack.Navigator>
   )
 }
@@ -51,12 +45,12 @@ const DrawerNav=()=>{
   const navigation=useNavigation();
   return(
       <Drawer.Navigator screenOptions={{
-        statusBarColor: '#0163d2',
+        // statusBarColor: '#0163d2',
         headerStyle: {
-          backgroundColor: '#0163d2',
+          // backgroundColor: '#0163d2',
         },
         headerTitle:'E-Buy Lk',
-        headerTintColor: '#fff',
+        // headerTintColor: '#fff',
         headerTitleAlign: 'center',
         // headerLeft:()=>{
         //   return(
@@ -64,7 +58,9 @@ const DrawerNav=()=>{
         //   )
         // }
       }}>
-        <Drawer.Screen name="Home" component={Register}/>
+        <Drawer.Screen name="Home" component={HomePage}/>
+
+        <Drawer.Screen name="My Cart" component={Cart}/>
         
       </Drawer.Navigator>
   )
