@@ -16,7 +16,7 @@ function Category({route,navigation}) {
         
         <Text style={{fontSize:18,fontWeight:600}}>{route.params.name.cateTitle}</Text>
 
-        <ScrollView>
+        <ScrollView style={{width:'100%'}}>
         <View
               style={{
                 // flex:1,
