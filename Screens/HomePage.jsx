@@ -167,6 +167,7 @@ export default function HomePage() {
                 renderItem={ProItem}
                 numColumns={2}
                 scrollEnabled
+                ItemSeparatorComponent={() => <View style={{height: 20}} />}
               />
             </View>
           </View>

@@ -7,7 +7,8 @@ import { scale } from 'react-native-size-matters'
 
   export default function ProItem({item,index}) {
     return (
-    <View key={item.productID} style={{flex:2,backgroundColor:'white',margin:2,borderRadius:15}}>
+    <View key={item.productID} style={{flexGrow: 1,
+      width: "40%",backgroundColor:'white',marginHorizontal:5,borderRadius:15}}>
       
       <Image source={{uri:item.thumbnail}} style={{width:'100%',borderRadius:15,height:undefined,aspectRatio:1}} /> 
       <Text style={{ width:'100%',marginHorizontal:5}}>{item.productTitle}</Text>
