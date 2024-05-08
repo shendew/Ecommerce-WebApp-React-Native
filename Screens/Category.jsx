@@ -1,12 +1,16 @@
 import React from 'react'
-import { FlatList, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native'
+import { Dimensions, FlatList, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native'
 import ProItem from './ProItem';
 const Products = require("../jsonData/Products.json");
+import SliderBox from 'react-native-image-slider-box';
+
+const { width, height } = Dimensions.get("window");
+
 
 
 function Category({route,navigation}) {
     const statusHight=StatusBar.currentHeight;
-    
+
   return (
     < SafeAreaView style={{paddingTop:statusHight+5,flex:1,alignItems:'center'}}>
         
