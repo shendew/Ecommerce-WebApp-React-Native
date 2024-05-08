@@ -69,8 +69,10 @@ export default function App() {
   return (
     //navigation through screens
     <NavigationContainer>
+
       {/* <DrawerNav/> */}
       <StackNav/>
+
     </NavigationContainer>
     
   );

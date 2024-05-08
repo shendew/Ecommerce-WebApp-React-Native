@@ -9,14 +9,20 @@
     "web": "expo start --web"
   },
   "dependencies": {
+
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "@react-navigation/stack": "^6.3.29",
     "deprecated-react-native-prop-types": "^5.0.0",
+
+    "@react-native-community/checkbox": "^0.5.17",
+    "bootstrap": "^5.3.3",
+
     "expo": "~50.0.14",
     "expo-linear-gradient": "~12.7.2",
-    "expo-status-bar": "~1.11.1",
+    "expo-status-bar": "~1.11.1",v
+
     "patch-package": "^8.0.0",
     "react": "18.2.0",
     "react-native": "0.73.6",
@@ -27,6 +33,13 @@
     "react-native-size-matters": "^0.4.2",
     "react-native-vector-icons": "^10.0.3",
     "react-native-virtualized-view": "^1.0.0"
+
+    "prettier": "^3.2.5",
+    "react": "18.2.0",
+    "react-native": "0.73.6",
+    "react-native-btr": "^2.2.1",
+    "react-native-elements": "^3.4.3"
+
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
