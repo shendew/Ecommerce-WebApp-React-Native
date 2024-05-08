@@ -1,0 +1,37 @@
+[
+    {
+        "cateID":1,
+        "cateTitle":"Beauty",
+        "cateImg":""
+    },
+    {
+        "cateID":2,
+        "cateTitle":"Fashion",
+        "cateImg":""
+    },
+    {
+        "cateID":3,
+        "cateTitle":"Kids",
+        "cateImg":""
+    },
+    {
+        "cateID":4,
+        "cateTitle":"Mens",
+        "cateImg":""
+    },
+    {
+        "cateID":5,
+        "cateTitle":"Womens",
+        "cateImg":""
+    },
+    {
+        "cateID":6,
+        "cateTitle":"Tech",
+        "cateImg":""
+    },
+    {
+        "cateID":7,
+        "cateTitle":"Health",
+        "cateImg":""
+    }
+]
