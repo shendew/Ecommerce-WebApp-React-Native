@@ -86,3 +86,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+
+// "@react-native-community/checkbox": "^0.5.17",
+// "react-native-vector-icons": "^10.0.3",

@@ -20,7 +20,6 @@ import ProductItem from "./ProductItem";
 import { SliderBox } from "react-native-image-slider-box";
 
 const { width, height } = Dimensions.get("window");
-import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
 import HomeCaregoryItem from "./HomeCaregoryItem";
 import ProItem from "./ProItem";
@@ -36,7 +35,7 @@ export const SliderItem = {
   desc: String,
 };
 
-const cardWidth = (width / 2.9) * 2;
+const cardWidth = (width / 2.7) * 2;
 const gap = (width - cardWidth) / 7;
 const offset = cardWidth;
 
@@ -97,7 +96,7 @@ export default function HomePage() {
             <TextInput
               style={styles.searchBox}
               placeholder="Search any Product.."
-              placeholderTextColor={"gray"}
+              placeholderTextColor={"#606060"}
               onChangeText={setSearchTxt}
               value={searchTxt}
             />
@@ -193,9 +192,9 @@ const Item = ({ i, scrollX }) => {
         style={{ width: "100%", height: "100%", borderRadius: 10 ,position:'absolute'}}
       />
       <View style={{position:'absolute', width:'100%', height:'100%',justifyContent:'space-around',paddingTop:"20%",alignContent:'flex-start',padding:5,flexDirection:'column'}}>
-      <Text style={[styles.text,{color:'white',width:"50%"}]}>{sliderData[i].sliderTitle}</Text>
-      <Text style={{color:'white',width:"35%",fontSize:10}}>{"Card :" + sliderData[i].sliderTitle}</Text>
-      <TouchableOpacity  color={"red"}  width='35%' ><View style={{padding:5,borderRadius:5,borderColor:'white',borderWidth:1,width:'30%',justifyContent:'center',alignItems:'center'}}><Text style={{color:'white',fontSize:11,fontWeight:600}}>Shop Now</Text></View></TouchableOpacity>
+      <Text style={[styles.text,{color:'#ffffff',width:"50%"}]}>{sliderData[i].sliderTitle}</Text>
+      <Text style={{color:'#ffffff',width:"35%",fontSize:10}}>{"Card :" + sliderData[i].sliderTitle}</Text>
+      <TouchableOpacity  color={"#bb0000"}  width='35%' ><View style={{padding:5,borderRadius:5,borderColor:'#ffffff',borderWidth:1,width:'30%',justifyContent:'center',alignItems:'center'}}><Text style={{color:'#ffffff',fontSize:11,fontWeight:600}}>Shop Now</Text></View></TouchableOpacity>
 
       </View>
     </Animated.View>
@@ -213,13 +212,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     paddingRight: 15,
     paddingBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
   },
   textInput: {
     display: "none",
-    color: "black",
+    color: "#00000",
     textAlign: "left",
-    placeholderTextColor: "black",
+    placeholderTextColor: "#00000",
     width: "90%",
     marginBottom: 20,
     borderRadius: 17,
@@ -231,7 +230,7 @@ const styles = StyleSheet.create({
   searchBox: {
     padding: 10,
     textAlign: "left",
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
     width: "93%",
     borderRadius: 10,
     marginTop: 10,
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
 
   container: { flexDirection: "row", alignItems: "center" },
   item: {
-    backgroundColor: "red",
+    backgroundColor: "#bb0000",
     width: cardWidth,
     height: cardWidth / 1.3,
     marginHorizontal: gap,

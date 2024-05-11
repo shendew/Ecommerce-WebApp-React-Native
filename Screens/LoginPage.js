@@ -35,7 +35,7 @@ function LoginPage() {
               fontSize: 25,
               fontWeight: 700,
               marginBottom: 50,
-              color: "black",
+              color: "#000000",
             }}
           >
             Login
@@ -43,7 +43,7 @@ function LoginPage() {
           <TextInput
             style={styles.textInput}
             placeholder="Email"
-            placeholderTextColor={"white"}
+            placeholderTextColor={"#ffffff"}
             onChangeText={onChangeUseremail}
             value={UserEmail}
           />
@@ -52,14 +52,14 @@ function LoginPage() {
             style={styles.textInput}
             secureTextEntry={true}
             placeholder="Password"
-            placeholderTextColor={"white"}
+            placeholderTextColor={"#ffffff"}
             onChangeText={onChangeUserpassword}
             value={UserPassword}
           />
 
           <TouchableOpacity
             style={{
-              backgroundColor: "yellow",
+              backgroundColor: "#eee600",
               alignItems: "center",
               justifyContent: "center",
               height: 50,
@@ -70,7 +70,7 @@ function LoginPage() {
             onPress={() => navigation.push("HomePage")}
           >
             <Text
-              style={{ textAlign: "center", color: "black", fontWeight: 600 }}
+              style={{ textAlign: "center", color: "#000000", fontWeight: 600 }}
             >
               Login
             </Text>
@@ -80,7 +80,7 @@ function LoginPage() {
             style={{ width: "90%" }}
             onPress={() => navigation.push("SignIn")}
           >
-            <Text style={{ fontSize: 12 ,color:'maroon'}}>
+            <Text style={{ fontSize: 12 ,color:'#7c0a0a'}}>
               Haven't registered yet,
               <Text style={{ fontWeight: 700 }}>Click here</Text>
             </Text>
@@ -99,19 +99,18 @@ const styles = StyleSheet.create({
     
   },
   textInput: {
-    color: "white",
+    color: "#ffffff",
     textAlign: "left",
-    
     width: "90%",
     marginBottom: 20,
     borderRadius: 17,
-    borderColor: "white",
+    borderColor: "#ffffff",
     borderWidth: 1,
     padding: 8,
     paddingHorizontal: 25,
   },
   subContainer:{
-    backgroundColor:'white',
+    backgroundColor:'#ffffff',
     opacity:0.7, 
     width:'90%',
     height:'60%',

@@ -31,7 +31,7 @@ function Register() {
               fontSize: 25,
               fontWeight: 700,
               marginBottom: 50,
-              color: "black",
+              color: "#00000",
             }}
           >
             Sign Up
@@ -53,7 +53,7 @@ function Register() {
           <TextInput
             style={styles.textInput}
             placeholder="Email"
-            placeholderTextColor={"white"}
+            placeholderTextColor={"#ffffff"}
             onChangeText={onChangeUseremail}
             value={UserEmail}
           />
@@ -62,14 +62,14 @@ function Register() {
             style={styles.textInput}
             secureTextEntry={true}
             placeholder="Password"
-            placeholderTextColor={"white"}
+            placeholderTextColor={"#ffffff"}
             onChangeText={onChangeUserpassword}
             value={UserPassword}
           />
 
           <TouchableOpacity
             style={{
-              backgroundColor: "yellow",
+              backgroundColor: "#eee600",
               alignItems: "center",
               justifyContent: "center",
               height: 50,
@@ -80,7 +80,7 @@ function Register() {
             onPress={() => navigation.push("HomePage")}
           >
             <Text
-              style={{ textAlign: "center", color: "black", fontWeight: 600 }}
+              style={{ textAlign: "center", color: "#00000", fontWeight: 600 }}
             >
               Sign Up
             </Text>
@@ -90,7 +90,7 @@ function Register() {
             style={{ width: "90%", alignContent: "center" }}
             onPress={() => navigation.push("Register")}
           >
-            <Text style={{ fontSize: 12, color: "maroon" }}>
+            <Text style={{ fontSize: 12, color: "#7c0a0a" }}>
               Already a member?
               <Text style={{ fontWeight: 700 }}> SignIn</Text>
             </Text>
@@ -117,13 +117,13 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   textInput: {
-    color: "white",
+    color: "#ffffff",
     textAlign: "left",
 
     width: "90%",
     marginBottom: 20,
     borderRadius: 17,
-    borderColor: "white",
+    borderColor: "#ffffff",
     borderWidth: 1,
     padding: 8,
     paddingHorizontal: 25,
