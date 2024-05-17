@@ -1,19 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  SafeAreaView,
-  Animated,
-  StyleSheet,
-  TextInput,
-  Alert,
-  ImageBackground,
-  Button,
-} from "react-native";
+import {View,Text,ScrollView,FlatList,TouchableOpacity,Image,Dimensions,SafeAreaView,Animated,StyleSheet,TextInput,Alert,ImageBackground,Button,} from "react-native";
 // import { ScrollView } from 'react-native-virtualized-view'
 import React, { useEffect, useRef, useState } from "react";
 import ProductItem from "./ProductItem";
@@ -24,7 +9,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import HomeCaregoryItem from "./HomeCaregoryItem";
 import ProItem from "./ProItem";
 import { useNavigation } from "@react-navigation/native";
+import { AuthProvider, useAuth,useUpdateAuth,AuthContext } from "./AuthContext";
 
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const sliderData = require("../jsonData/Sliders.json");
 const Products = require("../jsonData/Products.json");
 const Categories = require("../jsonData/Categories.json");
@@ -41,25 +29,17 @@ const offset = cardWidth;
 
 export default function HomePage() {
   const navigation = useNavigation();
-  const FlatRef = useRef();
   const [searchTxt, setSearchTxt] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const authHandler=useUpdateAuth();
+
+  
 
   const scrollX = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {});
-
-  const getItemLayout = (data, index) => ({
-    length: width,
-    offset: width * index,
-    index: index,
+  useEffect(() => {
   });
 
-  const handleScroll = (event) => {
-    const scrollPosition = event.nativeEvent.contentOffset.x;
-    const index = scrollPosition / width;
-    setCurrentIndex(Math.round(index));
-  };
+
 
   const HomeCateItem = ({ item, index }) => {
     const CategoryClick = (item) => {
@@ -108,6 +88,17 @@ export default function HomePage() {
                 fontWeight: 700,
                 width: "93%",
               }}
+              onPress={()=>{
+                AsyncStorage.removeItem("AUTH_TOKEN")
+                .then(() => {
+                  console.log("Token removed successfully");
+                  authHandler(false);
+                })
+                .catch((error) => {
+                  Alert.alert("Please try again later.")
+                  console.error("Error removing token:", error);
+                });
+              }}
             >
               All Featured
             </Text>
@@ -152,13 +143,10 @@ export default function HomePage() {
             </View>
             <View
               style={{
-                // flex:1,
-                // height: 500,
                 flexDirection: "row",
                 padding: 10,
                 flexWrap: "wrap",
                 justifyContent: "space-around",
-                // backgroundColor: "yellow",
               }}
             >
               <FlatList
@@ -174,8 +162,8 @@ export default function HomePage() {
       </View>
     </SafeAreaView>
   );
-}
 
+} 
 const Item = ({ i, scrollX }) => {
   const scale = scrollX.interpolate({
     inputRange: [-offset + i * offset, offset * i, offset + i * offset],
