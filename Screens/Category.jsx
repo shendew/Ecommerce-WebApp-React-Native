@@ -1,20 +1,64 @@
-import React from 'react'
-import { Dimensions, FlatList, SafeAreaView, ScrollView, StatusBar, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Dimensions, FlatList, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import ProItem from './ProItem';
-const Products = require("../jsonData/Products.json");
+
 import SliderBox from 'react-native-image-slider-box';
-
+import { useNavigation } from '@react-navigation/native';
+import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
+import axios from "axios";
 
 
 
-function Category({route,navigation}) {
+function Category({route}) {
     const statusHight=StatusBar.currentHeight;
+    const navigation = useNavigation();
+    const [Products, setProducts] = useState([]);
+
+    const getProducts = async () => {
+      axios
+        .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
+        .then(function (response) {
+          const da=response.data;
+          if(da.length%2==1){
+            const it={
+            "productID": null,
+            "productTitle": "Pepsi - 1.50 l",
+            "productDescription": "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
+            "productPrice": 400,
+            "discountPercentage": 25,
+            "rating": 4.69,
+            "stock": 94,
+            "brand": "Pepsi",
+            "category": "Beverages",
+            "thumbnail": "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+            "images": ["https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg", "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg"]
+          };
+          const UpdatedArray=[...da,it];
+            setProducts(UpdatedArray)
+          }else{
+            setProducts(da)
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+
+    useEffect(()=>{
+      getProducts();
+    },[])
 
   return (
-    < SafeAreaView style={{paddingTop:statusHight+5,flex:1,alignItems:'center'}}>
+    < SafeAreaView style={{flex:1,alignItems:'center'}}>
+        <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+        <View style={{ width: "100%", height: 60, backgroundColor: "white",flexDirection:'row',paddingHorizontal:15,paddingBottom:7,elevation: 1,alignItems:'flex-end'}}>
+        <Icon style={{}} name="angle-left" size={30} color="black" onPress={()=>{navigation.goBack()}}/>
+        <Text style={{fontSize:19,textAlign:'center',fontWeight:600,flex:1}}>{route.params.name.cateTitle}</Text>
+        {/* <Icon2 name="shopping-cart" size={30} color="black" onPress={()=>{navigation.push("MyCart")}}/> */}
+      </View>
         
-        <Text style={{fontSize:18,fontWeight:600}}>{route.params.name.cateTitle}</Text>
 
         <ScrollView style={{width:'100%'}}>
         <View
@@ -30,7 +74,22 @@ function Category({route,navigation}) {
             >
               <FlatList
                 data={Products}
-                renderItem={ProItem}
+                renderItem={({item})=>{
+                  return(
+                    <View
+                    key={item.productID}
+                    style={{
+                      flexGrow: 1,
+                      width: width/2.5,
+                      marginHorizontal: 5,
+                    }}
+                  >
+                    <ProItem data={item} />
+                  </View>
+                  )
+                  
+                  
+                }}
                 numColumns={2}
                 scrollEnabled
                 ItemSeparatorComponent={() => <View style={{height: 20}} />}

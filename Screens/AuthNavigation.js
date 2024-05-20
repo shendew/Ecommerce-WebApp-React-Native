@@ -5,6 +5,7 @@ import {
   DrawerActions,
   NavigationContainer,
   useNavigation,
+  NavigationActions,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -22,6 +23,10 @@ import {
   useUpdateAuth,
 } from "./AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProductViewScreen from "./ProductViewScreen";
+import SearchScreen from "./SearchScreen";
+import Icon2 from 'react-native-vector-icons/Feather';
+
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
 
@@ -62,6 +67,9 @@ function AuthNavigation() {
             <Stack.Screen name="HomePage" component={HomePage} />
             <Stack.Screen name="CategoryViewPage" component={Category} />
             <Stack.Screen name="HomeCategoryItem" component={HomeCaregoryItem} />
+            <Stack.Screen name="ProductView" component={ProductViewScreen}/>
+            <Stack.Screen name="MyCart" component={Cart} />
+            <Stack.Screen name="SearchScreens" component={SearchScreen}/>
           </>
         ) : (
           <>
@@ -75,6 +83,8 @@ function AuthNavigation() {
 
   function DrawerNav() {
     const Drawer = createDrawerNavigator();
+    const navigation=useNavigation();
+  
     return (
       <Drawer.Navigator
         initialRouteName="HomePage"
@@ -82,6 +92,7 @@ function AuthNavigation() {
           headerStyle: {},
           headerTitle: "E-Buy Lk",
           headerTitleAlign: "center",
+          headerRight:()=>{ return (<Icon2 name="shopping-cart" size={20}  color="black" onPress={()=>{navigation.navigate("My Cart")}} style={{marginRight:10}}/>)}
         }}
       >
         <Drawer.Screen name="Home" component={HomePage} />

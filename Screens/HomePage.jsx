@@ -1,21 +1,29 @@
-import {View,Text,ScrollView,FlatList,TouchableOpacity,Image,Dimensions,SafeAreaView,Animated,StyleSheet,TextInput,Alert,ImageBackground,Button,} from "react-native";
-// import { ScrollView } from 'react-native-virtualized-view'
+import {
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  SafeAreaView,
+  Animated,
+  StyleSheet,
+  TextInput,
+  Alert,
+  StatusBar,
+} from "react-native";
+import Icon2 from "react-native-vector-icons/Feather";
 import React, { useEffect, useRef, useState } from "react";
-import ProductItem from "./ProductItem";
-import { SliderBox } from "react-native-image-slider-box";
-
 const { width, height } = Dimensions.get("window");
-import { LinearGradient } from "expo-linear-gradient";
-import HomeCaregoryItem from "./HomeCaregoryItem";
+
 import ProItem from "./ProItem";
 import { useNavigation } from "@react-navigation/native";
-import { AuthProvider, useAuth,useUpdateAuth,AuthContext } from "./AuthContext";
+import { useUpdateAuth } from "./AuthContext";
 
+import axios from "axios";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-const sliderData = require("../jsonData/Sliders.json");
-const Products = require("../jsonData/Products.json");
-const Categories = require("../jsonData/Categories.json");
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SliderItem = {
   title: String,
@@ -28,25 +36,81 @@ const gap = (width - cardWidth) / 7;
 const offset = cardWidth;
 
 export default function HomePage() {
-  const navigation = useNavigation();
+  const [Products, setProducts] = useState([]);
+  const [Sliders, setSliders] = useState([]);
+  const [Categories, setCategories] = useState([]);
   const [searchTxt, setSearchTxt] = useState("");
-  const authHandler=useUpdateAuth();
 
-  
+
+  const navigation = useNavigation();
+  const authHandler = useUpdateAuth();
 
   const scrollX = useRef(new Animated.Value(1)).current;
 
+  const getProducts = async () => {
+    axios
+      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
+      .then(function (response) {
+        const da=response.data;
+        if(da.length%2==1){
+          const it={
+          "productID": null,
+          "productTitle": "Pepsi - 1.50 l",
+          "productDescription": "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
+          "productPrice": 400,
+          "discountPercentage": 25,
+          "rating": 4.69,
+          "stock": 94,
+          "brand": "Pepsi",
+          "category": "Beverages",
+          "thumbnail": "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+          "images": ["https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg", "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg"]
+        };
+        const UpdatedArray=[...da,it];
+          setProducts(UpdatedArray)
+        }else{
+          setProducts(da)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+  const getSliders = async () => {
+    axios
+      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/sliders")
+      .then((response) => {
+        setSliders(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getCategires = async () => {
+    axios
+      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/categories")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
-  });
+    getProducts();
+    getCategires();
+    getSliders();
 
-
+    
+  }, []);
 
   const HomeCateItem = ({ item, index }) => {
     const CategoryClick = (item) => {
       navigation.push("CategoryViewPage", { name: item });
     };
     return (
-      <TouchableOpacity onPress={() => CategoryClick(item)}>
+      <TouchableOpacity key={item.cateID} onPress={() => CategoryClick(item)}>
         <View
           key={item.cateID}
           style={{
@@ -70,7 +134,8 @@ export default function HomePage() {
 
   return (
     <SafeAreaView>
-      <View style={{ height: height - 50 }}>
+      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+      <View style={{}}>
         <ScrollView style={{ backgroundColor: "#F3F3F3" }}>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TextInput
@@ -79,6 +144,11 @@ export default function HomePage() {
               placeholderTextColor={"#606060"}
               onChangeText={setSearchTxt}
               value={searchTxt}
+              // onFocus={()=>{navigation.push("SearchScreens",{txt:searchTxt})}}
+              returnKeyType="search"
+              onSubmitEditing={() => {
+                navigation.push("SearchScreens", { text: searchTxt });
+              }}
             />
 
             <Text
@@ -88,16 +158,16 @@ export default function HomePage() {
                 fontWeight: 700,
                 width: "93%",
               }}
-              onPress={()=>{
+              onPress={() => {
                 AsyncStorage.removeItem("AUTH_TOKEN")
-                .then(() => {
-                  console.log("Token removed successfully");
-                  authHandler(false);
-                })
-                .catch((error) => {
-                  Alert.alert("Please try again later.")
-                  console.error("Error removing token:", error);
-                });
+                  .then(() => {
+                    console.log("Token removed successfully");
+                    authHandler(false);
+                  })
+                  .catch((error) => {
+                    Alert.alert("Please try again later.");
+                    console.error("Error removing token:", error);
+                  });
               }}
             >
               All Featured
@@ -136,8 +206,8 @@ export default function HomePage() {
                   }
                 )}
               >
-                {sliderData.map((e, i) => (
-                  <Item key={e} scrollX={scrollX} i={i} />
+                {Sliders.map((e, i) => (
+                  <Item key={e} scrollX={scrollX} i={i} Sliders={Sliders} />
                 ))}
               </ScrollView>
             </View>
@@ -151,10 +221,24 @@ export default function HomePage() {
             >
               <FlatList
                 data={Products}
-                renderItem={ProItem}
+                renderItem={({ item }) => {
+                  return (
+                    <View
+                      key={item.productID}
+                      style={{
+                        flexGrow: 1,
+                        width: width/2.5,
+                        marginHorizontal: 5,
+                      }}
+                    >
+                      <ProItem data={item} />
+                    </View>
+                  );
+                }}
                 numColumns={2}
+                columnWrapperStyle={{flex: 1,justifyContent: "space-around"}}
                 scrollEnabled
-                ItemSeparatorComponent={() => <View style={{height: 20}} />}
+                ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               />
             </View>
           </View>
@@ -162,9 +246,8 @@ export default function HomePage() {
       </View>
     </SafeAreaView>
   );
-
-} 
-const Item = ({ i, scrollX }) => {
+}
+const Item = ({ i, scrollX, Sliders }) => {
   const scale = scrollX.interpolate({
     inputRange: [-offset + i * offset, offset * i, offset + i * offset],
     outputRange: [0.9, 1.1, 0.9],
@@ -172,18 +255,56 @@ const Item = ({ i, scrollX }) => {
   return (
     <Animated.View
       key={i}
-      style={[styles.item, { transform: [{ scale: scale }] ,position:'relative'}]}
+      style={[
+        styles.item,
+        { transform: [{ scale: scale }], position: "relative" },
+      ]}
     >
       <Image
-        source={{ uri: sliderData[i].sliderIMG }}
+        source={{ uri: Sliders[i].sliderIMG }}
         resizeMode="cover"
-        style={{ width: "100%", height: "100%", borderRadius: 10 ,position:'absolute'}}
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: 10,
+          position: "absolute",
+        }}
       />
-      <View style={{position:'absolute', width:'100%', height:'100%',justifyContent:'space-around',paddingTop:"20%",alignContent:'flex-start',padding:5,flexDirection:'column'}}>
-      <Text style={[styles.text,{color:'#ffffff',width:"50%"}]}>{sliderData[i].sliderTitle}</Text>
-      <Text style={{color:'#ffffff',width:"35%",fontSize:10}}>{"Card :" + sliderData[i].sliderTitle}</Text>
-      <TouchableOpacity  color={"#bb0000"}  width='35%' ><View style={{padding:5,borderRadius:5,borderColor:'#ffffff',borderWidth:1,width:'30%',justifyContent:'center',alignItems:'center'}}><Text style={{color:'#ffffff',fontSize:11,fontWeight:600}}>Shop Now</Text></View></TouchableOpacity>
-
+      <View
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          justifyContent: "space-around",
+          paddingTop: "20%",
+          alignContent: "flex-start",
+          padding: 5,
+          flexDirection: "column",
+        }}
+      >
+        <Text style={[styles.text, { color: "#ffffff", width: "50%" }]}>
+          {Sliders[i].sliderTitle}
+        </Text>
+        <Text style={{ color: "#ffffff", width: "35%", fontSize: 10 }}>
+          {"Card :" + Sliders[i].sliderTitle}
+        </Text>
+        <TouchableOpacity color={"#bb0000"} width="35%">
+          <View
+            style={{
+              padding: 5,
+              borderRadius: 5,
+              borderColor: "#ffffff",
+              borderWidth: 1,
+              width: "30%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "#ffffff", fontSize: 11, fontWeight: 600 }}>
+              Shop Now
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
     </Animated.View>
   );
@@ -235,12 +356,10 @@ const styles = StyleSheet.create({
     marginHorizontal: gap,
     borderRadius: 10,
   },
-  text: { 
-    fontSize: 20, 
-    fontWeight: "600", 
-    color: "#fff" ,
-    textAlign:'left'
-    
+  text: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#fff",
+    textAlign: "left",
   },
-    
 });
