@@ -14,6 +14,7 @@ import {
 import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth, useUpdateAuth } from "./AuthContext";
+import Toast from "react-native-toast-message";
 
 
 function LoginPage() {
@@ -21,6 +22,52 @@ function LoginPage() {
   const [UserEmail, onChangeUseremail] = React.useState("");
   const [UserPassword, onChangeUserpassword] = React.useState("");
   const authHandler = useUpdateAuth();
+
+  const getProducts = async () => {
+    axios
+      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
+      .then(function (response) {
+        const da=response.data;
+        if(da.length%2==1){
+          const it={
+          "productID": null,
+          "productTitle": "Pepsi - 1.50 l",
+          "productDescription": "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
+          "productPrice": 400,
+          "discountPercentage": 25,
+          "rating": 4.69,
+          "stock": 94,
+          "brand": "Pepsi",
+          "category": "Beverages",
+          "thumbnail": "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+          "images": ["https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg", "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg"]
+        };
+        const UpdatedArray=[...da,it];
+          setProducts(UpdatedArray)
+        }else{
+          setProducts(da)
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const checkAUth=async()=>{
+    axios
+    .post("https://ebuy-sl.netlify.app/.netlify/functions/api/user")
+    .then(function (response) {
+      const da=response.data;
+      
+    })
+    .catch(function (error) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Something went wrong!",
+      });
+    });
+  }
 
 
   return (
@@ -77,6 +124,17 @@ function LoginPage() {
               marginBottom: 10,
             }}
             onPress={() => {
+
+              if(UserEmail!="" && UserPassword!=""){
+                
+              }else{
+                Toast.show({
+                  type: "error",
+                  text1: "Error",
+                  text2: "Fill all fields",
+                });
+              }
+
               AsyncStorage.setItem("AUTH_TOKEN", JSON.stringify("test-auth-key"))
                 .then(() => {
                   console.log("Token saved successfully");

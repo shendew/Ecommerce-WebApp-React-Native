@@ -9,6 +9,8 @@ import Icon2 from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
 import axios from "axios";
 
+// import Products from '../jsonData/Products.json';
+
 
 
 function Category({route}) {
@@ -18,7 +20,7 @@ function Category({route}) {
 
     const getProducts = async () => {
       axios
-        .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
+        .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products",{params:{'category':route.params.data.category}})
         .then(function (response) {
           const da=response.data;
           if(da.length%2==1){

@@ -2,6 +2,10 @@ import { useNavigation } from "@react-navigation/native";
 import { ImageBackground, Text, View, TouchableOpacity } from "react-native";
 import React, { Component } from "react";
 import { StyleSheet, Image, TextInput } from "react-native";
+import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+import { placeholderTextColor } from "deprecated-react-native-prop-types/DeprecatedTextInputPropTypes";
+import validator from "validator";
+import Toast from "react-native-toast-message";
 
 function Register() {
   const navigation = useNavigation();
@@ -9,6 +13,19 @@ function Register() {
   const [LastName, onChangeLastname] = React.useState("");
   const [UserEmail, onChangeUseremail] = React.useState("");
   const [UserPassword, onChangeUserpassword] = React.useState("");
+  const [UserConfirmPassword, onChangeUserConfirmpassword] = React.useState("");
+
+  const [isEmailWrong, setIsEmailWrong] = React.useState(false);
+  const [isConfrimPassWrong, setIsConfrimPassWrong] = React.useState(false);
+  const [isPassWrong, setIsPassWrong] = React.useState(false);
+
+  const uploadData = () => {
+    Toast.show({
+      type: "success",
+      text1: "Welcome",
+      text2: "Welcome to E-Buy LK",
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -26,6 +43,7 @@ function Register() {
             source={require("../img/logo.png")}
             style={{ width: "30%", height: "20%" }}
           />
+
           <Text
             style={{
               fontSize: 25,
@@ -50,21 +68,48 @@ function Register() {
             onChangeText={onChangeLastname}
             value={LastName}
           />
+
           <TextInput
-            style={styles.textInput}
+            style={[
+              styles.textInput,
+              { borderColor: isEmailWrong ? "red" : "#ffffff" },
+            ]}
             placeholder="Email"
-            placeholderTextColor={"#ffffff"}
+            placeholderTextColor={isEmailWrong ? "red" : "#ffffff"}
             onChangeText={onChangeUseremail}
             value={UserEmail}
+            onFocus={() => {
+              setIsEmailWrong(false);
+            }}
           />
 
           <TextInput
-            style={styles.textInput}
+            style={[
+              styles.textInput,
+              { borderColor: isPassWrong ? "red" : "#ffffff" },
+            ]}
             secureTextEntry={true}
             placeholder="Password"
-            placeholderTextColor={"#ffffff"}
+            placeholderTextColor={isPassWrong ? "red" : "#ffffff"}
             onChangeText={onChangeUserpassword}
+            onFocus={() => {
+              setIsPassWrong(false);
+            }}
             value={UserPassword}
+          />
+          <TextInput
+            style={[
+              styles.textInput,
+              { borderColor: isConfrimPassWrong ? "red" : "#ffffff" },
+            ]}
+            secureTextEntry={true}
+            placeholder="Password"
+            placeholderTextColor={isConfrimPassWrong ? "red" : "#ffffff"}
+            onChangeText={onChangeUserConfirmpassword}
+            onFocus={() => {
+              setIsConfrimPassWrong(false);
+            }}
+            value={UserConfirmPassword}
           />
 
           <TouchableOpacity
@@ -77,7 +122,45 @@ function Register() {
               borderRadius: 25,
               marginBottom: 10,
             }}
-            onPress={() => navigation.push("HomePage")}
+            onPress={() => {
+              if (UserPassword != UserConfirmPassword) {
+                setIsConfrimPassWrong(true);
+                Toast.show({
+                  type: "error",
+                  text1: "Error",
+                  text2: "Confirm password is missmatch",
+                });
+              } else {
+                if (validator.isEmail(UserEmail)) {
+                  if (UserPassword.length >= 8) {
+                    if(FirstName!="" && LastName!=""){
+                      uploadData();
+                    }else{
+                      Toast.show({
+                        type: "error",
+                        text1: "Error",
+                        text2: "Fill all fields",
+                      });
+                    }
+                    
+                  } else {
+                    setIsPassWrong(true);
+                    Toast.show({
+                      type: "error",
+                      text1: "Error",
+                      text2: "Password need atleast 8 characters",
+                    });
+                  }
+                } else {
+                  setIsEmailWrong(true);
+                  Toast.show({
+                    type: "error",
+                    text1: "Error",
+                    text2: "Email is wrong!",
+                  });
+                }
+              }
+            }}
           >
             <Text
               style={{ textAlign: "center", color: "#00000", fontWeight: 600 }}
@@ -88,7 +171,7 @@ function Register() {
 
           <TouchableOpacity
             style={{ width: "90%", alignContent: "center" }}
-            onPress={() => navigation.push("Register")}
+            onPress={() => navigation.goBack()}
           >
             <Text style={{ fontSize: 12, color: "#7c0a0a" }}>
               Already a member?
@@ -96,6 +179,7 @@ function Register() {
             </Text>
           </TouchableOpacity>
         </View>
+        <Toast style={{ position: "absolute" }} />
       </ImageBackground>
     </View>
   );

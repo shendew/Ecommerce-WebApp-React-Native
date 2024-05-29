@@ -6,6 +6,7 @@ import {
   NavigationContainer,
   useNavigation,
   NavigationActions,
+  
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -26,6 +27,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProductViewScreen from "./ProductViewScreen";
 import SearchScreen from "./SearchScreen";
 import Icon2 from 'react-native-vector-icons/Feather';
+import { useTheme,useUpdateTheme } from "./ThemeContext";
+import Theme from "./Theme";
 
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
@@ -33,6 +36,11 @@ import Icon2 from 'react-native-vector-icons/Feather';
 function AuthNavigation() {
   const authHandler = useUpdateAuth();
   const [isLoading,setIsLoading]=React.useState(true);
+  
+
+  const isDark=useTheme();
+  // const [isDark,setIsDark]=useState(false);
+  const themeHandler=useUpdateTheme();
 
   const getAuthToken = async () => {
     try {
@@ -89,10 +97,11 @@ function AuthNavigation() {
       <Drawer.Navigator
         initialRouteName="HomePage"
         screenOptions={{
-          headerStyle: {},
+          headerStyle: {backgroundColor:isDark?"#7c0a0a":"white",},
           headerTitle: "E-Buy Lk",
           headerTitleAlign: "center",
-          headerRight:()=>{ return (<Icon2 name="shopping-cart" size={20}  color="black" onPress={()=>{navigation.navigate("My Cart")}} style={{marginRight:10}}/>)}
+          headerTintColor:isDark?"white":"black",
+          headerRight:()=>{ return (<Icon2 name="shopping-cart" size={20}  color={isDark?"white":"black"} onPress={()=>{navigation.navigate("My Cart")}} style={{marginRight:10}}/>)}
         }}
       >
         <Drawer.Screen name="Home" component={HomePage} />

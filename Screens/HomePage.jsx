@@ -16,14 +16,14 @@ import {
 import Icon2 from "react-native-vector-icons/Feather";
 import React, { useEffect, useRef, useState } from "react";
 const { width, height } = Dimensions.get("window");
-
 import ProItem from "./ProItem";
 import { useNavigation } from "@react-navigation/native";
 import { useUpdateAuth } from "./AuthContext";
-
 import axios from "axios";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme, useUpdateTheme } from "./ThemeContext";
+
+// import Categories from '../jsonData/Categories.json';
 
 export const SliderItem = {
   title: String,
@@ -44,6 +44,10 @@ export default function HomePage() {
 
   const navigation = useNavigation();
   const authHandler = useUpdateAuth();
+  const isDark=useTheme();
+  // const [isDark,setIsDark]=useState(false);
+  const themeHandler=useUpdateTheme();
+
 
   const scrollX = useRef(new Animated.Value(1)).current;
 
@@ -107,7 +111,7 @@ export default function HomePage() {
 
   const HomeCateItem = ({ item, index }) => {
     const CategoryClick = (item) => {
-      navigation.push("CategoryViewPage", { name: item });
+      navigation.push("CategoryViewPage", { data: item });
     };
     return (
       <TouchableOpacity key={item.cateID} onPress={() => CategoryClick(item)}>
@@ -134,9 +138,9 @@ export default function HomePage() {
 
   return (
     <SafeAreaView>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+      <StatusBar backgroundColor={isDark?"black":"white"} barStyle={isDark?"light-content":"dark-content"} />
       <View style={{}}>
-        <ScrollView style={{ backgroundColor: "#F3F3F3" }}>
+        <ScrollView style={{ backgroundColor: isDark?"black":"#F3F3F3" ,color:isDark?"white":"black"}}>
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TextInput
               style={styles.searchBox}
@@ -157,8 +161,12 @@ export default function HomePage() {
                 fontSize: 18,
                 fontWeight: 700,
                 width: "93%",
+                color:isDark?"white":"black",
               }}
               onPress={() => {
+
+          //update login
+
                 AsyncStorage.removeItem("AUTH_TOKEN")
                   .then(() => {
                     console.log("Token removed successfully");
@@ -168,6 +176,9 @@ export default function HomePage() {
                     Alert.alert("Please try again later.");
                     console.error("Error removing token:", error);
                   });
+
+          //update theme
+                // themeHandler(!isDark)
               }}
             >
               All Featured
@@ -207,7 +218,7 @@ export default function HomePage() {
                 )}
               >
                 {Sliders.map((e, i) => (
-                  <Item key={e} scrollX={scrollX} i={i} Sliders={Sliders} />
+                  <Item key={i} scrollX={scrollX} i={i} Sliders={Sliders} />
                 ))}
               </ScrollView>
             </View>

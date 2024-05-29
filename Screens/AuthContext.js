@@ -5,6 +5,8 @@ import { Text } from "react-native";
  const AuthContext=createContext();
  const UpdateAuthContect=createContext();
 
+ 
+
 export function useAuth(){
     return useContext(AuthContext);
 }
