@@ -15,60 +15,13 @@ import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth, useUpdateAuth } from "./AuthContext";
 import Toast from "react-native-toast-message";
-
+import axios from "axios";
 
 function LoginPage() {
   const navigation = useNavigation();
   const [UserEmail, onChangeUseremail] = React.useState("");
   const [UserPassword, onChangeUserpassword] = React.useState("");
   const authHandler = useUpdateAuth();
-
-  const getProducts = async () => {
-    axios
-      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
-      .then(function (response) {
-        const da=response.data;
-        if(da.length%2==1){
-          const it={
-          "productID": null,
-          "productTitle": "Pepsi - 1.50 l",
-          "productDescription": "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
-          "productPrice": 400,
-          "discountPercentage": 25,
-          "rating": 4.69,
-          "stock": 94,
-          "brand": "Pepsi",
-          "category": "Beverages",
-          "thumbnail": "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
-          "images": ["https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg", "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg"]
-        };
-        const UpdatedArray=[...da,it];
-          setProducts(UpdatedArray)
-        }else{
-          setProducts(da)
-        }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
-  const checkAUth=async()=>{
-    axios
-    .post("https://ebuy-sl.netlify.app/.netlify/functions/api/user")
-    .then(function (response) {
-      const da=response.data;
-      
-    })
-    .catch(function (error) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Something went wrong!",
-      });
-    });
-  }
-
 
   return (
     <View style={styles.container}>
@@ -123,31 +76,80 @@ function LoginPage() {
               borderRadius: 25,
               marginBottom: 10,
             }}
-            onPress={() => {
-
-              if(UserEmail!="" && UserPassword!=""){
-                
-              }else{
+            onPress={async () => {
+              if (UserEmail != "" && UserPassword != "") {
+                axios
+                  .post(
+                    "https://ebuy-sl-39c4d4a9e148.herokuapp.com/auth/?UserEmail=" +
+                      UserEmail +
+                      "&UserPassword=" +
+                      UserPassword,
+                    {
+                      headers: {
+                        "Content-Type": "application/json; charset=UTF-8",
+                      },
+                      // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
+                    }
+                  )
+                  .then(function (response) {
+                    console.log(response.data);
+                    console.log(UserEmail + "_____" + UserPassword);
+                    const da = response.data;
+                    if (da.status == 101) {
+                      Toast.show({
+                        type: "error",
+                        text1: "Error",
+                        text2: "You're not registered",
+                      });
+                    } else if (da.status == 102) {
+                      Toast.show({
+                        type: "error",
+                        text1: "Error",
+                        text2: "Server error",
+                      });
+                    } else if (da.status == 103) {
+                      //success
+                      AsyncStorage.setItem(
+                        "AUTH_TOKEN",
+                        JSON.stringify(da.authKey)
+                      )
+                        .then(() => {
+                          console.log("Token saved successfully");
+                          authHandler(true);
+                        })
+                        .catch((error) => {
+                          Alert.alert("Please try again later.");
+                          console.error("Error saving token:", error);
+                        });
+                    } else if (da.status == 104) {
+                      Toast.show({
+                        type: "error",
+                        text1: "Error",
+                        text2: "Password wrong",
+                      });
+                    }
+                  })
+                  .catch(function (error) {
+                    Toast.show({
+                      type: "error",
+                      text1: "Error",
+                      text2: "Something went wrong!",
+                    });
+                  });
+              } else {
                 Toast.show({
                   type: "error",
                   text1: "Error",
                   text2: "Fill all fields",
                 });
               }
-
-              AsyncStorage.setItem("AUTH_TOKEN", JSON.stringify("test-auth-key"))
-                .then(() => {
-                  console.log("Token saved successfully");
-                  authHandler(true);
-                })
-                .catch((error) => {
-                  Alert.alert("Please try again later.")
-                  console.error("Error saving token:", error);
-                });
-              
             }}
           >
-            <Text style={{ textAlign: "center", color: "#000000", fontWeight: 600 }}>Login</Text>
+            <Text
+              style={{ textAlign: "center", color: "#000000", fontWeight: 600 }}
+            >
+              Login
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -160,6 +162,7 @@ function LoginPage() {
             </Text>
           </TouchableOpacity>
         </View>
+        <Toast />
       </ImageBackground>
     </View>
   );

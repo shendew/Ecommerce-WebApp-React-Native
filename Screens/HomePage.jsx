@@ -53,7 +53,7 @@ export default function HomePage() {
 
   const getProducts = async () => {
     axios
-      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products")
+      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products")
       .then(function (response) {
         const da=response.data;
         if(da.length%2==1){
