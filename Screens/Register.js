@@ -58,11 +58,21 @@ function Register() {
         //success
         AsyncStorage.setItem(
           "AUTH_TOKEN",
-          JSON.stringify(da.authKey)
+          (da.authKey)
         )
           .then(() => {
-            console.log("Token saved successfully");
-            authHandler(true);
+            AsyncStorage.setItem(
+              "USER_EMAIL",
+              (UserEmail)
+            )
+              .then(() => {
+                console.log("Token,Email saved successfully");
+                authHandler(true);
+              })
+              .catch((error) => {
+                Alert.alert("Please try again later.");
+                console.error("Error saving email:", error);
+              });
           })
           .catch((error) => {
             

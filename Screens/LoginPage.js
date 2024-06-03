@@ -88,12 +88,9 @@ function LoginPage() {
                       headers: {
                         "Content-Type": "application/json; charset=UTF-8",
                       },
-                      // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
                     }
                   )
                   .then(function (response) {
-                    console.log(response.data);
-                    console.log(UserEmail + "_____" + UserPassword);
                     const da = response.data;
                     if (da.status == 101) {
                       Toast.show({
@@ -111,16 +108,29 @@ function LoginPage() {
                       //success
                       AsyncStorage.setItem(
                         "AUTH_TOKEN",
-                        JSON.stringify(da.authKey)
+                        (da.authKey)
                       )
                         .then(() => {
-                          console.log("Token saved successfully");
-                          authHandler(true);
+                          AsyncStorage.setItem(
+                            "USER_EMAIL",
+                            (UserEmail)
+                          )
+                            .then(() => {
+                              console.log("Token,Email saved successfully");
+                              authHandler(true);
+                            })
+                            .catch((error) => {
+                              Alert.alert("Please try again later.");
+                              console.error("Error saving email:", error);
+                            });
+                          
                         })
                         .catch((error) => {
                           Alert.alert("Please try again later.");
                           console.error("Error saving token:", error);
                         });
+
+
                     } else if (da.status == 104) {
                       Toast.show({
                         type: "error",

@@ -18,11 +18,13 @@ function Category({route}) {
     const navigation = useNavigation();
     const [Products, setProducts] = useState([]);
 
+    
+
     const getProducts = async () => {
       axios
-        .get("https://ebuy-sl.netlify.app/.netlify/functions/api/products",{params:{'category':route.params.data.category}})
+        .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products",{params:{'category':route.params.data.category}})
         .then(function (response) {
-          const da=response.data;
+          const da=response.data.value;
           if(da.length%2==1){
             const it={
             "productID": null,
@@ -57,7 +59,7 @@ function Category({route}) {
         <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
         <View style={{ width: "100%", height: 60, backgroundColor: "white",flexDirection:'row',paddingHorizontal:15,paddingBottom:7,elevation: 1,alignItems:'flex-end'}}>
         <Icon style={{}} name="angle-left" size={30} color="black" onPress={()=>{navigation.goBack()}}/>
-        <Text style={{fontSize:19,textAlign:'center',fontWeight:600,flex:1}}>{route.params.name.cateTitle}</Text>
+        <Text style={{fontSize:19,textAlign:'center',fontWeight:600,flex:1}}>{route.params.data.cateTitle}</Text>
         {/* <Icon2 name="shopping-cart" size={30} color="black" onPress={()=>{navigation.push("MyCart")}}/> */}
       </View>
         

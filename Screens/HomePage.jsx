@@ -41,39 +41,54 @@ export default function HomePage() {
   const [Categories, setCategories] = useState([]);
   const [searchTxt, setSearchTxt] = useState("");
 
-
   const navigation = useNavigation();
   const authHandler = useUpdateAuth();
-  const isDark=useTheme();
+  const isDark = useTheme();
   // const [isDark,setIsDark]=useState(false);
-  const themeHandler=useUpdateTheme();
-
+  const themeHandler = useUpdateTheme();
 
   const scrollX = useRef(new Animated.Value(1)).current;
 
   const getProducts = async () => {
     axios
-      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products")
+      .get(
+        "https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products",
+        {
+          params: { ReqType: "all" },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+          // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
+        }
+      )
       .then(function (response) {
-        const da=response.data;
-        if(da.length%2==1){
-          const it={
-          "productID": null,
-          "productTitle": "Pepsi - 1.50 l",
-          "productDescription": "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
-          "productPrice": 400,
-          "discountPercentage": 25,
-          "rating": 4.69,
-          "stock": 94,
-          "brand": "Pepsi",
-          "category": "Beverages",
-          "thumbnail": "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
-          "images": ["https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg", "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg"]
-        };
-        const UpdatedArray=[...da,it];
-          setProducts(UpdatedArray)
-        }else{
-          setProducts(da)
+        const da = response.data.value;
+
+        if (da.length % 2 == 1) {
+          const it = {
+            productID: null,
+            productTitle: "Pepsi - 1.50 l",
+            productDescription:
+              "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
+            productPrice: 400,
+            discountPercentage: 25,
+            rating: 4.69,
+            stock: 94,
+            brand: "Pepsi",
+            category: "Beverages",
+            thumbnail:
+              "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+            images: [
+              "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+              "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg",
+            ],
+          };
+          const UpdatedArray = [...da, it];
+          setProducts(UpdatedArray);
+        } else {
+          setProducts(da);
         }
       })
       .catch(function (error) {
@@ -82,9 +97,13 @@ export default function HomePage() {
   };
   const getSliders = async () => {
     axios
-      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/sliders")
+      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/sliders")
       .then((response) => {
-        setSliders(response.data);
+        if (response.data.status == 103) {
+          setSliders(response.data.value);
+        } else {
+          //no sliders
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -92,9 +111,9 @@ export default function HomePage() {
   };
   const getCategires = async () => {
     axios
-      .get("https://ebuy-sl.netlify.app/.netlify/functions/api/categories")
+      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/categories")
       .then((response) => {
-        setCategories(response.data);
+        setCategories(response.data.value);
       })
       .catch((err) => {
         console.log(err);
@@ -105,8 +124,6 @@ export default function HomePage() {
     getProducts();
     getCategires();
     getSliders();
-
-    
   }, []);
 
   const HomeCateItem = ({ item, index }) => {
@@ -138,9 +155,17 @@ export default function HomePage() {
 
   return (
     <SafeAreaView>
-      <StatusBar backgroundColor={isDark?"black":"white"} barStyle={isDark?"light-content":"dark-content"} />
+      <StatusBar
+        backgroundColor={isDark ? "black" : "white"}
+        barStyle={isDark ? "light-content" : "dark-content"}
+      />
       <View style={{}}>
-        <ScrollView style={{ backgroundColor: isDark?"black":"#F3F3F3" ,color:isDark?"white":"black"}}>
+        <ScrollView
+          style={{
+            backgroundColor: isDark ? "black" : "#F3F3F3",
+            color: isDark ? "white" : "black",
+          }}
+        >
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TextInput
               style={styles.searchBox}
@@ -161,11 +186,10 @@ export default function HomePage() {
                 fontSize: 18,
                 fontWeight: 700,
                 width: "93%",
-                color:isDark?"white":"black",
+                color: isDark ? "white" : "black",
               }}
               onPress={() => {
-
-          //update login
+                //update login
 
                 AsyncStorage.removeItem("AUTH_TOKEN")
                   .then(() => {
@@ -177,7 +201,7 @@ export default function HomePage() {
                     console.error("Error removing token:", error);
                   });
 
-          //update theme
+                //update theme
                 // themeHandler(!isDark)
               }}
             >
@@ -201,6 +225,8 @@ export default function HomePage() {
                 />
               </View>
             </ScrollView>
+
+            
 
             <View style={{ height: 300, width: width }}>
               <ScrollView
@@ -238,7 +264,7 @@ export default function HomePage() {
                       key={item.productID}
                       style={{
                         flexGrow: 1,
-                        width: width/2.5,
+                        width: width / 2.5,
                         marginHorizontal: 5,
                       }}
                     >
@@ -247,7 +273,7 @@ export default function HomePage() {
                   );
                 }}
                 numColumns={2}
-                columnWrapperStyle={{flex: 1,justifyContent: "space-around"}}
+                columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
                 scrollEnabled
                 ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               />
