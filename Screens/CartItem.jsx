@@ -2,7 +2,10 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { Image } from 'react-native'
 
-export default function CartItem({item,index}) {
+export default function CartItem({product,index,qty}) {
+  console.log(product)
+  console.log(index)
+  console.log(qty)
   return (
     <View
               style={{
@@ -15,10 +18,11 @@ export default function CartItem({item,index}) {
               <View
                 style={{ borderBottomColor: "black", borderBottomWidth: 1 ,flexDirection:'row'}}
               >
-                <Image height={100} width={undefined} style={{aspectRatio:1}} source={{uri:item[0].thumbnail}}/>
+                <Image height={100} width={undefined} style={{aspectRatio:1}} source={{uri:product[0].thumbnail}}/>
                 <View style={{marginLeft:5}}>
-                  <Text>{item[0].productTitle}</Text>
-                  <Text>{item[0].productPrice}</Text>
+                  <Text>{product[0].productTitle}</Text>
+                  <Text>{product[0].productPrice}</Text>
+                  <Text>{qty[index].QTY}</Text>
 
                 </View>
               </View>

@@ -3,7 +3,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { Button, FlatList, Text, View } from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
 
@@ -13,6 +13,7 @@ export default function Cart() {
   const [email,setEmail]=useState("");
   const [Products,setProducts]=useState();
   const [QTY,setQTY]=useState();
+  const {isLoading,setIsLoading} =useState(true);
 
   const getAuthToken = async () => {
     
@@ -39,8 +40,10 @@ export default function Cart() {
       .then(function (response) {
         const da=response.data.value;
           setProducts(da)
-          console.log(response.data)
+          
           setQTY(response.data.cart)
+          DelayNode(1)
+          setIsLoading(false);
       })
       .catch(function (error) {
         console.log(error);
@@ -53,12 +56,22 @@ export default function Cart() {
   }, []);
 
   return (
+    isLoading?<View>Loading</View>:
     <View>
       <FlatList
         data={Products}
-        renderItem={CartItem}
+        renderItem={({item,index})=>{
+          console.log(item)
+          console.log(index)
+          console.log(QTY)
+          return(
+            <CartItem product={item} index={index} qty={QTY}/>
+          )
+        }}
         scrollEnabled
       />
+
+      {/* <Button title="Place order"/> */}
     </View>
   );
 }
