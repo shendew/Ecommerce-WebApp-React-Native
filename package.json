@@ -28,6 +28,7 @@
     "react-native": "0.73.6",
     "react-native-axios": "^0.17.1",
     "react-native-btr": "^2.2.1",
+    "react-native-dotenv": "^3.4.11",
     "react-native-elements": "^3.4.3",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-image-slider-box": "^2.0.7",

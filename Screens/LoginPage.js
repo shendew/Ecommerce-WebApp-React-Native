@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth, useUpdateAuth } from "./AuthContext";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import{BASEURL} from '@env';
 
 function LoginPage() {
   const navigation = useNavigation();
@@ -80,7 +81,7 @@ function LoginPage() {
               if (UserEmail != "" && UserPassword != "") {
                 axios
                   .post(
-                    "https://ebuy-sl-39c4d4a9e148.herokuapp.com/auth/?UserEmail=" +
+                    BASEURL+"/auth/?UserEmail=" +
                       UserEmail +
                       "&UserPassword=" +
                       UserPassword,

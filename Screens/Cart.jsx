@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button, FlatList, Text, View } from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
+import{BASEURL} from '@env';
 
 export default function Cart() {
   const navigation = useNavigation();
@@ -29,7 +30,7 @@ export default function Cart() {
 
   const getProducts = async ({e,a}) => {
     axios
-      .post("https://ebuy-sl-39c4d4a9e148.herokuapp.com/auth/cart",{
+      .post(BASEURL+"/auth/cart",{
         UserEmail:e,
         authKey:a
       },{

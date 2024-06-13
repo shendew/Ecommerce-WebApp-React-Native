@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
 import axios from "axios";
-
+import{BASEURL} from '@env';
 // import Products from '../jsonData/Products.json';
 
 
@@ -22,7 +22,12 @@ function Category({route}) {
 
     const getProducts = async () => {
       axios
-        .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products",{params:{'category':route.params.data.category}})
+        .get(BASEURL+"/api/products",{
+          params:{
+            ReqType: "bycate" ,
+            'category':route.params.data.cateTitle
+          }
+        })
         .then(function (response) {
           const da=response.data.value;
           if(da.length%2==1){

@@ -22,6 +22,7 @@ import { useUpdateAuth } from "./AuthContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, useUpdateTheme } from "./ThemeContext";
+import{BASEURL} from '@env';
 
 // import Categories from '../jsonData/Categories.json';
 
@@ -52,7 +53,7 @@ export default function HomePage() {
   const getProducts = async () => {
     axios
       .get(
-        "https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products",
+        BASEURL+"/api/products",
         {
           params: { ReqType: "all" },
         },
@@ -97,7 +98,7 @@ export default function HomePage() {
   };
   const getSliders = async () => {
     axios
-      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/sliders")
+      .get(BASEURL+"/api/sliders")
       .then((response) => {
         if (response.data.status == 103) {
           setSliders(response.data.value);
@@ -111,7 +112,7 @@ export default function HomePage() {
   };
   const getCategires = async () => {
     axios
-      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/categories")
+      .get(BASEURL+"/api/categories")
       .then((response) => {
         setCategories(response.data.value);
       })

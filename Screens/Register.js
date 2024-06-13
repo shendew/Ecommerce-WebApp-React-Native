@@ -9,6 +9,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuth, useUpdateAuth } from "./AuthContext";
+import{BASEURL} from '@env';
 
 
 function Register() {
@@ -30,7 +31,7 @@ function Register() {
 
     axios
     .post(
-      "https://ebuy-sl-39c4d4a9e148.herokuapp.com/auth/insert",{
+      BASEURL+"/auth/insert",{
         UserID:5,
         UserFirstName:FirstName,
         UserLastName:LastName,

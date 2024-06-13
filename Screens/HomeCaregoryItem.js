@@ -10,7 +10,7 @@ function HomeCaregoryItem({item,index}) {
   const CategoryClick=(item)=>{
     Alert.alert("Clicked : "+item.cateTitle);
     //props.navigation.navigate("Home1")
-    navigation.push("CategoryViewPage");
+    navigation.push("CategoryViewPage", { data: item });
   }
   return (
     <TouchableOpacity onPress={()=>CategoryClick(item)}>

@@ -14,6 +14,7 @@ import Icon2 from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import ProItem from "./ProItem";
 import axios from "axios";
+import{BASEURL} from '@env';
 
 const SearchScreen = ({ route }) => {
   const [searchTxt, setSearchTxt] = useState(text);
@@ -24,7 +25,7 @@ const SearchScreen = ({ route }) => {
 
   const getProducts = async (sText) => {
     axios
-      .get("https://ebuy-sl-39c4d4a9e148.herokuapp.com/api/products",{params:{q:sText}})
+      .get(BASEURL+"/api/products",{params:{q:sText}})
       .then(function (response) {
         setProducts(response.data);
       })
