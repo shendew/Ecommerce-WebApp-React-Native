@@ -7,11 +7,62 @@ const { width, height } = Dimensions.get("window");
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from 'react-native-vector-icons/Feather';
 import { ScrollView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { BASEURL } from "@env";
+import { Alert } from "react-native";
+import { useState } from "react";
 
 
 function ProductViewScreen({ route }) {
   const navigation = useNavigation();
-  
+  const [auth, setAuth] = useState("");
+  const [email, setEmail] = useState("");
+
+  const getAuthToken = async () => {
+    await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
+      await AsyncStorage.getItem("USER_EMAIL").then( async(e) => {
+        
+        setAuth(e.a);
+        setEmail(e.e);
+        addcar(e,a);
+      });
+    });
+  };
+  const addcar=async(e,a)=>{
+    console.log(e)
+    console.log(a)
+    console.log(route.params.data.productID)
+    // console.log()
+    
+    axios
+      .put(
+        BASEURL + "/auth/cart",
+        {
+          UserEmail: e,
+          authKey: a,
+          productID:route.params.data.productID,
+          QTY:1,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+        }
+      )
+      .then(function (response) {
+        const da = response.data;
+        if(da.status == 103){
+          console.log("Success")
+        }else{
+          console.log("Failed to update"+da.status)
+        }
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
   return (
     <SafeAreaView style={{ width: "100%", height: '100%',flexDirection:'column'}}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
@@ -20,7 +71,7 @@ function ProductViewScreen({ route }) {
         <Icon2 name="shopping-cart" size={25} color="black" onPress={()=>{navigation.navigate("My Cart")}}/>
       </View>
       <ScrollView style={{paddingTop:5,height:'85%'}}>
-      <Image width={'100%'} height={undefined} style={{aspectRatio:1}} source={{uri:route.params.data.thumbnail}}/>
+      <Image  style={{aspectRatio:1}} source={{uri:route.params.data.thumbnail}}/>
       <View style={{paddingHorizontal:5,marginTop:10,borderRadius:1,marginHorizontal:5,backgroundColor:'white',paddingVertical:15}}>
       <Text style={{fontSize:18,fontWeight:600,}}>{route.params.data.productTitle}</Text>
       <View
@@ -68,7 +119,7 @@ function ProductViewScreen({ route }) {
       </View>
       </ScrollView>
       <View style={{flexDirection:'row',width:'100%',height:'7%',justifyContent:'space-around'}}>
-       <TouchableOpacity style={{flex:1,justifyContent:'center',borderRadius:5,margin:5,borderWidth:1}}><Text style={{textAlign:'center',fontSize:15,fontWeight:600}}>Add to Cart</Text></TouchableOpacity> 
+       <TouchableOpacity style={{flex:1,justifyContent:'center',borderRadius:5,margin:5,borderWidth:1}}><Text style={{textAlign:'center',fontSize:15,fontWeight:600}} onPress={()=>getAuthToken()}>Add to Cart</Text></TouchableOpacity> 
        <TouchableOpacity style={{backgroundColor:'#7c0a0a',flex:1,justifyContent:'center',borderRadius:5,margin:5}}><Text style={{textAlign:'center',fontSize:15,fontWeight:600,color:'white'}}>Buy it now</Text></TouchableOpacity> 
       </View>
     </SafeAreaView>

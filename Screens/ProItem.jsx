@@ -17,7 +17,7 @@ export default function ProItem({ data }) {
         <Image
           source={{ uri: data.thumbnail }}
           style={{
-            width: "100%",
+            
             borderRadius: 15,
             height: undefined,
             aspectRatio: 1,

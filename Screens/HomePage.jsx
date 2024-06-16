@@ -23,6 +23,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, useUpdateTheme } from "./ThemeContext";
 import{BASEURL} from '@env';
+import LottieView from "lottie-react-native";
 
 // import Categories from '../jsonData/Categories.json';
 
@@ -41,6 +42,7 @@ export default function HomePage() {
   const [Sliders, setSliders] = useState([]);
   const [Categories, setCategories] = useState([]);
   const [searchTxt, setSearchTxt] = useState("");
+  const [isLoading,setIsLoading] =useState(false);
 
   const navigation = useNavigation();
   const authHandler = useUpdateAuth();
@@ -91,6 +93,7 @@ export default function HomePage() {
         } else {
           setProducts(da);
         }
+        setIsLoading(false)
       })
       .catch(function (error) {
         console.log(error);
@@ -122,6 +125,7 @@ export default function HomePage() {
   };
 
   useEffect(() => {
+    setIsLoading(true)
     getProducts();
     getCategires();
     getSliders();
@@ -167,6 +171,15 @@ export default function HomePage() {
             color: isDark ? "white" : "black",
           }}
         >
+          {isLoading?<View>
+      <LottieView
+        source={require("../assets/anim/loading2.json")}
+        style={{ width: "100%", height: "100%" }}
+        autoPlay
+        loop
+      />
+    </View>:
+    
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TextInput
               style={styles.searchBox}
@@ -280,6 +293,7 @@ export default function HomePage() {
               />
             </View>
           </View>
+          }
         </ScrollView>
       </View>
     </SafeAreaView>

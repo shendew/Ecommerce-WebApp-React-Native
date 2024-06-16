@@ -7,6 +7,8 @@ import { Button, FlatList, SafeAreaView, Text, View } from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
 import { BASEURL } from "@env";
+import { useReducer } from "react";
+import LottieView from "lottie-react-native";
 
 export default function Cart() {
   const navigation = useNavigation();
@@ -14,7 +16,17 @@ export default function Cart() {
   const [email, setEmail] = useState("");
   const [Products, setProducts] = useState();
   const [QTY, setQTY] = useState();
-  const { isLoading, setIsLoading } = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshed, setIsRefreshed] = useState(false);
+  const [ReducerVal, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  const refreshStat = (isrefresh) => {
+    console.log("updated");
+    setIsLoading(true);
+    setIsRefreshed(true);
+    // window.location.reload(false)
+    // forceUpdate();
+  };
 
   const getAuthToken = async () => {
     await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
@@ -43,11 +55,13 @@ export default function Cart() {
       .then(function (response) {
         const da = response.data.value;
 
+        console.log(da);
+        console.log(response.data.cart);
         setQTY(response.data.cart);
         setProducts(da);
 
-        DelayNode(1);
         setIsLoading(false);
+        setIsRefreshed(false);
       })
       .catch(function (error) {
         console.log(error);
@@ -55,28 +69,56 @@ export default function Cart() {
   };
 
   useEffect(() => {
+    navigation.addListener("focus", () => {
+      getAuthToken();
+    });
+
     getAuthToken();
-  }, []);
+  }, [isRefreshed]);
 
   return isLoading ? (
-    <View>Loading</View>
+    <View>
+      <LottieView
+        source={require("../assets/anim/loading2.json")}
+        style={{ width: "100%", height: "100%" }}
+        autoPlay
+        loop
+      />
+    </View>
   ) : (
-    <SafeAreaView style={{flex:1,flexDirection:'column'}}>
-      <View style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={Products}
           renderItem={({ item, index }) => {
             // console.log(item)
-            console.log(index);
+            console.log();
             // console.log(QTY)
-            return <CartItem product={item} index={index} qty={QTY} />;
+            return (
+              <CartItem
+                product={item}
+                index={index}
+                qty={QTY}
+                auth={auth}
+                email={email}
+                reFreshStat={refreshStat}
+              />
+            );
           }}
           scrollEnabled
         />
       </View>
-      <View style={{paddingHorizontal:10,paddingVertical:10,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
-        <Text style={{fontSize:20}}>LKR:3000</Text>
-      <Button title="Checkout"/>
+      <View
+        style={{
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontSize: 20 }}>LKR:3000</Text>
+        <Button title="Checkout" onPress={() => {}} />
       </View>
     </SafeAreaView>
   );
