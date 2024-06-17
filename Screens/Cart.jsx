@@ -3,9 +3,10 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Button, FlatList, SafeAreaView, Text, View } from "react-native";
+import { ActivityIndicator, Button, FlatList, SafeAreaView, Text, View } from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
+import Loading from "./Loading";
 
 // import { useReducer } from "react";
 
@@ -29,6 +30,7 @@ export default function Cart() {
   };
 
   const getAuthToken = async () => {
+    setIsLoading(true);
     await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
       await AsyncStorage.getItem("USER_EMAIL").then((e) => {
         setAuth(a);
@@ -77,9 +79,7 @@ export default function Cart() {
   }, [isRefreshed]);
 
   return isLoading ? (
-    <View>
-      <Text>Loading</Text>
-    </View>
+    <Loading/>
   ) : (
     <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
       <View style={{ flex: 1 }}>

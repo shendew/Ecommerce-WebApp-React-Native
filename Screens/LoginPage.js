@@ -16,12 +16,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth, useUpdateAuth } from "./AuthContext";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import { useState } from "react";
+import Loading from "./Loading";
 
 function LoginPage() {
   const navigation = useNavigation();
   const [UserEmail, onChangeUseremail] = React.useState("");
   const [UserPassword, onChangeUserpassword] = React.useState("");
   const authHandler = useUpdateAuth();
+  const [isLoading,setIsLoading]=useState(false);
 
   return (
     <View style={styles.container}>
@@ -34,6 +37,9 @@ function LoginPage() {
           alignItems: "center",
         }}
       >
+        {
+          isLoading?Loading:
+        
         <View style={styles.subContainer}>
           <Image
             source={require("../img/logo.png")}
@@ -77,6 +83,7 @@ function LoginPage() {
               marginBottom: 10,
             }}
             onPress={async () => {
+              setIsLoading(true)
               if (UserEmail != "" && UserPassword != "") {
                 axios
                   .post(
@@ -91,6 +98,7 @@ function LoginPage() {
                     }
                   )
                   .then(function (response) {
+                    setIsLoading(false)
                     const da = response.data;
                     if (da.status == 101) {
                       Toast.show({
@@ -140,6 +148,7 @@ function LoginPage() {
                     }
                   })
                   .catch(function (error) {
+                    setIsLoading(false)
                     Toast.show({
                       type: "error",
                       text1: "Error",
@@ -147,6 +156,7 @@ function LoginPage() {
                     });
                   });
               } else {
+                setIsLoading(false)
                 Toast.show({
                   type: "error",
                   text1: "Error",
@@ -172,6 +182,7 @@ function LoginPage() {
             </Text>
           </TouchableOpacity>
         </View>
+        }
         <Toast />
       </ImageBackground>
     </View>

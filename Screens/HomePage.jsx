@@ -22,6 +22,7 @@ import { useUpdateAuth } from "./AuthContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, useUpdateTheme } from "./ThemeContext";
+import Loading from "./Loading";
 
 
 
@@ -164,6 +165,8 @@ export default function HomePage() {
         backgroundColor={isDark ? "black" : "white"}
         barStyle={isDark ? "light-content" : "dark-content"}
       />
+      {
+        isLoading?<Loading/>:
       <View style={{}}>
         <ScrollView
           style={{
@@ -288,6 +291,7 @@ export default function HomePage() {
           
         </ScrollView>
       </View>
+    }
     </SafeAreaView>
   );
 }

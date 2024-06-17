@@ -8,6 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
 import axios from "axios";
+import Loading from './Loading';
 
 // import Products from '../jsonData/Products.json';
 
@@ -17,10 +18,12 @@ function Category({route}) {
     const statusHight=StatusBar.currentHeight;
     const navigation = useNavigation();
     const [Products, setProducts] = useState([]);
+    const [isLoading,setIsLoading] = useState(false);
 
     
 
     const getProducts = async () => {
+      setIsLoading(true)
       axios
         .get("https://ebuy-backend.onrender.com"+"/api/products",{
           params:{
@@ -29,6 +32,7 @@ function Category({route}) {
           }
         })
         .then(function (response) {
+          setIsLoading(false)
           const da=response.data.value;
           if(da.length%2==1){
             const it={
@@ -51,6 +55,7 @@ function Category({route}) {
           }
         })
         .catch(function (error) {
+          setIsLoading(false)
           console.log(error);
         });
     };
@@ -69,6 +74,8 @@ function Category({route}) {
       </View>
         
 
+        {isLoading?<Loading/>:
+        
         <ScrollView style={{width:'100%'}}>
         <View
               style={{
@@ -105,7 +112,7 @@ function Category({route}) {
               />
             </View>
             </ScrollView>
-        
+}
         </SafeAreaView>
   )
 }
