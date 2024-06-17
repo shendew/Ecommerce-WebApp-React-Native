@@ -16,7 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth, useUpdateAuth } from "./AuthContext";
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import{BASEURL} from '@env';
 
 function LoginPage() {
   const navigation = useNavigation();
@@ -81,7 +80,7 @@ function LoginPage() {
               if (UserEmail != "" && UserPassword != "") {
                 axios
                   .post(
-                    BASEURL+"/auth/?UserEmail=" +
+                    "https://ebuy-backend.onrender.com"+"/auth/?UserEmail=" +
                       UserEmail +
                       "&UserPassword=" +
                       UserPassword,

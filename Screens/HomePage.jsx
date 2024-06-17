@@ -22,8 +22,8 @@ import { useUpdateAuth } from "./AuthContext";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, useUpdateTheme } from "./ThemeContext";
-import{BASEURL} from '@env';
-import LottieView from "lottie-react-native";
+
+
 
 // import Categories from '../jsonData/Categories.json';
 
@@ -55,7 +55,7 @@ export default function HomePage() {
   const getProducts = async () => {
     axios
       .get(
-        BASEURL+"/api/products",
+        "https://ebuy-backend.onrender.com"+"/api/products",
         {
           params: { ReqType: "all" },
         },
@@ -101,7 +101,7 @@ export default function HomePage() {
   };
   const getSliders = async () => {
     axios
-      .get(BASEURL+"/api/sliders")
+      .get("https://ebuy-backend.onrender.com"+"/api/sliders")
       .then((response) => {
         if (response.data.status == 103) {
           setSliders(response.data.value);
@@ -115,7 +115,7 @@ export default function HomePage() {
   };
   const getCategires = async () => {
     axios
-      .get(BASEURL+"/api/categories")
+      .get("https://ebuy-backend.onrender.com"+"/api/categories")
       .then((response) => {
         setCategories(response.data.value);
       })
@@ -171,14 +171,6 @@ export default function HomePage() {
             color: isDark ? "white" : "black",
           }}
         >
-          {isLoading?<View>
-      <LottieView
-        source={require("../assets/anim/loading2.json")}
-        style={{ width: "100%", height: "100%" }}
-        autoPlay
-        loop
-      />
-    </View>:
     
           <View style={{ flexDirection: "column", alignItems: "center" }}>
             <TextInput
@@ -293,7 +285,7 @@ export default function HomePage() {
               />
             </View>
           </View>
-          }
+          
         </ScrollView>
       </View>
     </SafeAreaView>

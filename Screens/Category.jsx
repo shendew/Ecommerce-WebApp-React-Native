@@ -8,7 +8,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from 'react-native-vector-icons/Feather';
 const { width, height } = Dimensions.get("window");
 import axios from "axios";
-import{BASEURL} from '@env';
+
 // import Products from '../jsonData/Products.json';
 
 
@@ -22,7 +22,7 @@ function Category({route}) {
 
     const getProducts = async () => {
       axios
-        .get(BASEURL+"/api/products",{
+        .get("https://ebuy-backend.onrender.com"+"/api/products",{
           params:{
             ReqType: "bycate" ,
             'category':route.params.data.cateTitle

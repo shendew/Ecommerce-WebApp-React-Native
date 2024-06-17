@@ -1,8 +1,8 @@
 import * as React from "react";
-import * as SecureStore from "expo-secure-store";
 import { AuthProvider } from "./Screens/AuthContext";
 import AuthNavigation from "./Screens/AuthNavigation";
 import { ThemeProvider } from "./Screens/ThemeContext";
+
 
 export default function App() {
   return (
@@ -13,3 +13,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+

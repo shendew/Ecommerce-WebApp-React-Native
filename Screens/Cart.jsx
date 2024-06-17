@@ -6,9 +6,9 @@ import { useState } from "react";
 import { Button, FlatList, SafeAreaView, Text, View } from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
-import { BASEURL } from "@env";
-import { useReducer } from "react";
-import LottieView from "lottie-react-native";
+
+// import { useReducer } from "react";
+
 
 export default function Cart() {
   const navigation = useNavigation();
@@ -18,7 +18,7 @@ export default function Cart() {
   const [QTY, setQTY] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshed, setIsRefreshed] = useState(false);
-  const [ReducerVal, forceUpdate] = useReducer((x) => x + 1, 0);
+  // const [ReducerVal, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const refreshStat = (isrefresh) => {
     console.log("updated");
@@ -41,7 +41,7 @@ export default function Cart() {
   const getProducts = async ({ e, a }) => {
     axios
       .post(
-        BASEURL + "/auth/cart",
+        "https://ebuy-backend.onrender.com" + "/auth/cart",
         {
           UserEmail: e,
           authKey: a,
@@ -78,12 +78,7 @@ export default function Cart() {
 
   return isLoading ? (
     <View>
-      <LottieView
-        source={require("../assets/anim/loading2.json")}
-        style={{ width: "100%", height: "100%" }}
-        autoPlay
-        loop
-      />
+      <Text>Loading</Text>
     </View>
   ) : (
     <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>

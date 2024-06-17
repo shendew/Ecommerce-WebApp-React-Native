@@ -4,14 +4,14 @@ import { Image } from 'react-native'
 import Icon2 from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
-import { BASEURL } from "@env";
+
 export default function CartItem({product,index,qty,reFreshStat,auth,email}) {
 
   const deleteCar=async(pID)=>{
     console.log(email+"____"+auth)
     axios
       .delete(
-        BASEURL + "/auth/cart",
+        "https://ebuy-backend.onrender.com" + "/auth/cart",
         
         {
           data :{

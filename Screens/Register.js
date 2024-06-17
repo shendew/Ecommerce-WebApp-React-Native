@@ -9,7 +9,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuth, useUpdateAuth } from "./AuthContext";
-import{BASEURL} from '@env';
+
 
 
 function Register() {
@@ -31,7 +31,7 @@ function Register() {
 
     axios
     .post(
-      BASEURL+"/auth/insert",{
+      "https://ebuy-backend.onrender.com"+"/auth/insert",{
         UserID:5,
         UserFirstName:FirstName,
         UserLastName:LastName,

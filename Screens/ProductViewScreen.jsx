@@ -9,7 +9,7 @@ import Icon2 from 'react-native-vector-icons/Feather';
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { BASEURL } from "@env";
+
 import { Alert } from "react-native";
 import { useState } from "react";
 
@@ -37,7 +37,7 @@ function ProductViewScreen({ route }) {
     
     axios
       .put(
-        BASEURL + "/auth/cart",
+        "https://ebuy-backend.onrender.com" + "/auth/cart",
         {
           UserEmail: e,
           authKey: a,
