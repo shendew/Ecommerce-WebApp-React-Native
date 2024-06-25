@@ -8,7 +8,7 @@ import axios from "axios";
 export default function CartItem({product,index,qty,reFreshStat,auth,email}) {
 
   const deleteCar=async(pID)=>{
-    console.log(email+"____"+auth)
+    
     axios
       .delete(
         "https://ebuy-backend.onrender.com" + "/auth/cart",

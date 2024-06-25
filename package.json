@@ -19,10 +19,10 @@
     "deprecated-react-native-prop-types": "^5.0.0",
     "expo": "^50.0.17",
     "expo-linear-gradient": "~12.7.2",
-    
     "expo-status-bar": "~1.11.1",
     "expo-updates": "~0.24.13",
     "metro-react-native-babel-preset": "^0.77.0",
+    "moment": "^2.30.1",
     "patch-package": "^8.0.0",
     "prettier": "^3.2.5",
     "react": "18.2.0",
@@ -40,7 +40,8 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-vector-icons": "^10.1.0",
     "react-native-virtualized-view": "^1.0.0",
-    "validator": "^13.12.0"
+    "validator": "^13.12.0",
+    "expo-blur": "~12.9.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

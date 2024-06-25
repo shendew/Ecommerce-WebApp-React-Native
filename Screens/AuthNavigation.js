@@ -29,6 +29,7 @@ import SearchScreen from "./SearchScreen";
 import Icon2 from 'react-native-vector-icons/Feather';
 import { useTheme,useUpdateTheme } from "./ThemeContext";
 import Theme from "./Theme";
+import OrderPage from "./OrderPage";
 
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
@@ -78,6 +79,7 @@ function AuthNavigation() {
             <Stack.Screen name="ProductView" component={ProductViewScreen}/>
             <Stack.Screen name="MyCart" component={Cart} />
             <Stack.Screen name="SearchScreens" component={SearchScreen}/>
+            <Stack.Screen name="OrderScreen" component={OrderPage}/>
           </>
         ) : (
           <>

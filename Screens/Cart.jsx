@@ -41,6 +41,7 @@ export default function Cart() {
   };
 
   const getProducts = async ({ e, a }) => {
+
     axios
       .post(
         "https://ebuy-backend.onrender.com" + "/auth/cart",
@@ -56,9 +57,6 @@ export default function Cart() {
       )
       .then(function (response) {
         const da = response.data.value;
-
-        console.log(da);
-        console.log(response.data.cart);
         setQTY(response.data.cart);
         setProducts(da);
 
@@ -87,7 +85,7 @@ export default function Cart() {
           data={Products}
           renderItem={({ item, index }) => {
             // console.log(item)
-            console.log();
+            // console.log();
             // console.log(QTY)
             return (
               <CartItem
