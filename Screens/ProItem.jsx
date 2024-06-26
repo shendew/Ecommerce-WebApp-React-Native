@@ -5,10 +5,37 @@ import addCart from "../img/addtocart.png";
 import { scale } from "react-native-size-matters";
 
 import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
+import { useState } from "react";
+import { Rating } from "react-native-ratings";
 const { width, height } = Dimensions.get("window");
 
 export default function ProItem({ data }) {
+  const [ratings,setRatings] =useState(0);
   const navigation=useNavigation();
+
+  const calcRatings=()=>{
+    var rat=0;
+    const itemC=data.reviews.length;
+    if(itemC==0){
+      setRatings(0)
+    }else{
+      data.reviews.map((value, index, array) => {
+      rat=rat+value.Rating;
+      console.log(value)
+    })
+    setRatings(rat/itemC)
+    console.log(rat/itemC)
+    }
+      
+    
+    
+  }
+
+  useEffect(() => {
+    calcRatings();
+  }, []);
+
   return (
     data.productID==null?<View style={{backgroundColor: 'rgba(52, 52, 52)'}}></View>:
       <TouchableOpacity key={data.productID} style={{ backgroundColor: "#ffffff",borderRadius: 15,}} onPress={() => {
@@ -23,11 +50,23 @@ export default function ProItem({ data }) {
             aspectRatio: 1,
           }}
         />
-        <Text style={{ width: "100%", marginHorizontal: 5 }}>
+        <Text style={{ width: "100%", marginHorizontal: 5 ,marginBottom:5}}>
           {data.productTitle}
         </Text>
+        {
+          ratings==0?<></>:
+          <Rating
+                readonly
+                ratingCount={5}
+                imageSize={10}
+                fractions={1}
+                startingValue={ratings}
+                style={{ marginBottom: 10 ,alignSelf:'flex-start',marginLeft:10}}
+              />
+        }
+        
         {/* <Image source={addCart} style={styles.proAddC}/> */}
-        <Text style={{ color: "#00000", fontWeight: 600, margin: 10 }}>
+        <Text style={{ color: "#00000", fontWeight: 600, marginBottom: 10,marginHorizontal:10 }}>
           {"LKR : " +
             (
               (data.productPrice * (100 - data.discountPercentage)) /

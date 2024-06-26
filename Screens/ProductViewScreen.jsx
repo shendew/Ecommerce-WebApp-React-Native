@@ -23,7 +23,9 @@ import Loading from "./Loading";
 import { Dialog } from "react-native-elements";
 import { BlurView } from "expo-blur";
 import { useEffect } from "react";
-
+import { FlatList } from "react-native";
+import ReviewItem from "./ReviewItem";
+import { Rating } from "react-native-ratings";
 
 // TODO: Add reviews
 
@@ -31,34 +33,52 @@ function ProductViewScreen({ route }) {
   const [auth, setAuth] = useState("");
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [qtyDialog,setQtyDialog] =useState(false);
-  const [quantityC,setQuantityC] = useState(1);
+  const [qtyDialog, setQtyDialog] = useState(false);
+  const [quantityC, setQuantityC] = useState(1);
   const navigation = useNavigation();
+  const [ratings, setRatings] = useState(0);
 
   const getAuthToken = async (type) => {
     await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
-       setAuth(a);
+      setAuth(a);
       await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
-        
         setEmail(e);
         // if (type == "cart") {
         //   addcar(e, a);
         // } else if (type == "order") {
-          
+
         // }
-        
-        
-        return a;
+
+        // return a;
       });
     });
   };
 
   const openDialog = () => {
-    setQtyDialog(true)
+    setQtyDialog(true);
+  };
+
+  const calcRatings = () => {
+    var rat = 0;
+    const itemC = route.params.data.reviews.length;
+    if(itemC==0){
+      setRatings(0);
+      console.log(0);
+    }else{
+      
+
+      route.params.data.reviews.map((value, index, array) => {
+        rat = rat + value.Rating;
+      });
+      setRatings(rat / itemC);
+      console.log(rat / itemC);
+    }
+      
+    
   };
 
   const addcar = async (e, a) => {
-    console.log(e+a)
+    console.log(e + a);
     axios
       .put(
         "https://ebuy-backend.onrender.com" + "/auth/cart",
@@ -94,8 +114,9 @@ function ProductViewScreen({ route }) {
       });
   };
 
-  useEffect(async() => {
-    await getAuthToken();
+  useEffect(() => {
+    getAuthToken();
+    calcRatings();
   }, []);
 
   return (
@@ -201,6 +222,38 @@ function ProductViewScreen({ route }) {
               <Text style={{ fontSize: 11, marginTop: 15, lineHeight: 16 }}>
                 {route.params.data.productDescription}
               </Text>
+              <Text
+                style={{ fontSize: 18, fontWeight: 600, marginVertical: 15 }}
+              >
+                Reviews
+              </Text>
+
+              <Rating
+                readonly
+                ratingCount={5}
+                imageSize={30}
+                fractions={1}
+                showRating
+                startingValue={ratings}
+                style={{ marginBottom: 10 }}
+              />
+              {
+                route.params.data.reviews.length==0?<Text style={{alignSelf:'center',margin:10}}>No Reviews yet...</Text>:
+                <FlatList
+                data={route.params.data.reviews}
+                renderItem={({ item }) => {
+                  return (
+                    <View key={item.UserEmail}>
+                      <ReviewItem review={item} />
+                    </View>
+                  );
+                }}
+                scrollEnabled
+              />
+              }
+              
+              {/* <ReviewItem review={route.params.data.reviews[0]}/>
+              <ReviewItem review={route.params.data.reviews[1]}/> */}
             </View>
           </ScrollView>
           <View
@@ -219,12 +272,12 @@ function ProductViewScreen({ route }) {
                 margin: 5,
                 borderWidth: 1,
               }}
-              onPress={async() => {
+              onPress={async () => {
                 await getAuthToken("cart");
-                console.log(auth)
-                  console.log(email)
-                  addcar(email, auth);
-                  setIsLoading(true);
+                console.log(auth);
+                console.log(email);
+                addcar(email, auth);
+                setIsLoading(true);
                 // getAuthToken("cart").then((value) => {
                 //   console.log(auth)
                 //   console.log(email)
@@ -247,10 +300,17 @@ function ProductViewScreen({ route }) {
                 borderRadius: 5,
                 margin: 5,
               }}
-              onPress={async() => {
+              onPress={async () => {
                 await getAuthToken("order");
                 // setIsLoading(true);
-                openDialog(true)
+                // openDialog(true);
+                navigation.navigate("OrderScreen", {
+                  productID: route.params.data.productID,
+                  authKey: auth,
+                  Email: email,
+                  quantity: quantityC,
+                });
+
               }}
             >
               <Text
@@ -268,47 +328,72 @@ function ProductViewScreen({ route }) {
         </View>
       )}
       <Toast />
+
       <Modal
         animationType="fade"
         transparent={true}
         visible={qtyDialog}
         onRequestClose={() => setQtyDialog}
       >
-        <BlurView intensity={100} style={{flex:1,alignItems:'center',justifyContent:'center',}}>
-          <View style={{backgroundColor:'white',width:'80%',borderRadius:10,padding:10,paddingVertical:20,flexDirection:'column'}}>
-          <Text>Select the Quantity</Text>
-          <View style={{flexDirection:'row',justifyContent:'space-around',alignItems:'center'}}>
-          <Icon
-              name="minus"
-              size={20}
-              color="black"
+        <BlurView
+          intensity={100}
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              width: "80%",
+              borderRadius: 10,
+              padding: 10,
+              paddingVertical: 20,
+              flexDirection: "column",
+            }}
+          >
+            <Text>Select the Quantity</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-around",
+                alignItems: "center",
+              }}
+            >
+              <Icon
+                name="minus"
+                size={20}
+                color="black"
+                onPress={() => {
+                  setQuantityC((old) => (old == 1 ? old : old - 1));
+                }}
+              />
+              <Text style={{ marginVertical: 30, alignSelf: "center" }}>
+                {quantityC}
+              </Text>
+              <Icon
+                name="plus"
+                size={20}
+                color="black"
+                onPress={() => {
+                  setQuantityC((old) => old + 1);
+                }}
+              />
+            </View>
+
+            <Button
+              title="Buy"
               onPress={() => {
-                setQuantityC((old)=>old==1?old:old-1);
+                setQtyDialog(false);
+                navigation.navigate("OrderScreen", {
+                  productID: route.params.data.productID,
+                  authKey: auth,
+                  Email: email,
+                  quantity: quantityC,
+                });
               }}
             />
-            <Text style={{marginVertical:30,alignSelf:'center'}}>{quantityC}</Text>
-            <Icon
-              name="plus"
-              size={20}
-              color="black"
-              onPress={() => {
-                setQuantityC((old)=> old+1);
-              }}
-            />
-          </View>
-          
-          <Button title="Buy" onPress={()=>{
-            setQtyDialog(false);
-            navigation.navigate("OrderScreen", {
-              productID: route.params.data.productID,
-              authKey: auth,
-              Email: email,
-              quantity: quantityC,
-            });
-          }}/>
           </View>
         </BlurView>
       </Modal>
+      
     </SafeAreaView>
   );
 }
