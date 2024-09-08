@@ -19,7 +19,7 @@ export default function ReviewItem({ review }) {
         paddingTop: 10,
       }}
     >
-      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flex: 1, flexDirection: "row", alignItems:'stretch' }}>
         <Rating
           readonly
           
@@ -29,7 +29,7 @@ export default function ReviewItem({ review }) {
           startingValue={review.Rating}
         />
 
-        <Text style={{ fontSize: 8, marginBottom: 5 }}>{review.UserEmail}</Text>
+        <Text style={{ fontSize: 8, marginBottom: 5 ,marginLeft:5}}>{review.UserEmail}</Text>
       </View>
       <Text style={{ marginBottom: 5, fontWeight: 600 }}>{review.Title}</Text>
       <Text style={{ marginBottom: 10, color: "grey", marginLeft: 5 }}>

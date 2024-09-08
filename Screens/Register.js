@@ -9,11 +9,10 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useAuth, useUpdateAuth } from "./AuthContext";
-
-
+import { BaseUrl } from "../Utils/Constrains";
+import uuid from "react-native-uuid";
 
 function Register() {
-
   const authHandler = useUpdateAuth();
 
   const navigation = useNavigation();
@@ -26,77 +25,6 @@ function Register() {
   const [isEmailWrong, setIsEmailWrong] = React.useState(false);
   const [isConfrimPassWrong, setIsConfrimPassWrong] = React.useState(false);
   const [isPassWrong, setIsPassWrong] = React.useState(false);
-
-  const uploadData = async() => {
-
-    axios
-    .post(
-      "https://ebuy-backend.onrender.com"+"/auth/insert",{
-        UserID:5,
-        UserFirstName:FirstName,
-        UserLastName:LastName,
-        UserEmail:UserEmail,
-        UserPassword:UserPassword
-      },
-      {
-        headers: {
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-        // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
-      }
-    )
-    .then(function (response) {
-      console.log(response.data);
-      
-      const da = response.data;
-      if (da.status == 102) {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Server error",
-        });
-      } else if (da.status == 103) {
-        //success
-        AsyncStorage.setItem(
-          "AUTH_TOKEN",
-          (da.authKey)
-        )
-          .then(() => {
-            AsyncStorage.setItem(
-              "USER_EMAIL",
-              (UserEmail)
-            )
-              .then(() => {
-                console.log("Token,Email saved successfully");
-                authHandler(true);
-              })
-              .catch((error) => {
-                Alert.alert("Please try again later.");
-                console.error("Error saving email:", error);
-              });
-          })
-          .catch((error) => {
-            
-            console.error("Error saving token:", error);
-          });
-      } 
-    })
-    .catch(function (error) {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Something went wrong!",
-      });
-    });
-
-
-
-    Toast.show({
-      type: "success",
-      text1: "Welcome",
-      text2: "Welcome to E-Buy LK",
-    });
-  };
 
   return (
     <View style={styles.container}>
@@ -204,16 +132,21 @@ function Register() {
               } else {
                 if (validator.isEmail(UserEmail)) {
                   if (UserPassword.length >= 8) {
-                    if(FirstName!="" && LastName!=""){
-                      uploadData();
-                    }else{
+                    if (FirstName != "" && LastName != "") {
+                      // uploadData();
+                      navigation.push("OTPVeri", {
+                        UserEmail: UserEmail,
+                        FirstName: FirstName,
+                        LastName: LastName,
+                        UserPassword: UserPassword,
+                      });
+                    } else {
                       Toast.show({
                         type: "error",
                         text1: "Error",
                         text2: "Fill all fields",
                       });
                     }
-                    
                   } else {
                     setIsPassWrong(true);
                     Toast.show({

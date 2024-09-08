@@ -23,6 +23,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme, useUpdateTheme } from "./ThemeContext";
 import Loading from "./Loading";
+import { BaseUrl } from "../Utils/Constrains";
 
 
 
@@ -56,7 +57,7 @@ export default function HomePage() {
   const getProducts = async () => {
     axios
       .get(
-        "https://ebuy-backend.onrender.com"+"/api/products",
+        BaseUrl+"/api/products",
         {
           params: { ReqType: "all" },
         },
@@ -100,9 +101,10 @@ export default function HomePage() {
         console.log(error);
       });
   };
+  
   const getSliders = async () => {
     axios
-      .get("https://ebuy-backend.onrender.com"+"/api/sliders")
+      .get(BaseUrl+"/api/sliders")
       .then((response) => {
         if (response.data.status == 103) {
           setSliders(response.data.value);
@@ -114,9 +116,10 @@ export default function HomePage() {
         console.log(err);
       });
   };
+
   const getCategires = async () => {
     axios
-      .get("https://ebuy-backend.onrender.com"+"/api/categories")
+      .get(BaseUrl+"/api/categories")
       .then((response) => {
         setCategories(response.data.value);
       })
@@ -272,7 +275,8 @@ export default function HomePage() {
                     <View
                       key={item.productID}
                       style={{
-                        flexGrow: 1,
+                        flex:1/2,
+                        // flexGrow: 1,
                         width: width / 2.5,
                         marginHorizontal: 5,
                       }}
@@ -282,7 +286,7 @@ export default function HomePage() {
                   );
                 }}
                 numColumns={2}
-                columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
+                // columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
                 scrollEnabled
                 ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               />
@@ -398,7 +402,7 @@ const styles = StyleSheet.create({
 
   container: { flexDirection: "row", alignItems: "center" },
   item: {
-    backgroundColor: "#bb0000",
+    // backgroundColor: "#bb0000",
     width: cardWidth,
     height: cardWidth / 1.3,
     marginHorizontal: gap,

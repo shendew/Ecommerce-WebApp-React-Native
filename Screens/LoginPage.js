@@ -18,11 +18,15 @@ import Toast from "react-native-toast-message";
 import axios from "axios";
 import { useState } from "react";
 import Loading from "./Loading";
+import { passwordValidator } from "../Helpers/PasswordValidator";
+import { BaseUrl } from "../Utils/Constrains";
 
 function LoginPage() {
   const navigation = useNavigation();
+  
   const [UserEmail, onChangeUseremail] = React.useState("");
   const [UserPassword, onChangeUserpassword] = React.useState("");
+
   const authHandler = useUpdateAuth();
   const [isLoading,setIsLoading]=useState(false);
 
@@ -38,7 +42,7 @@ function LoginPage() {
         }}
       >
         {
-          isLoading?Loading:
+          isLoading?<Loading/>:
         
         <View style={styles.subContainer}>
           <Image
@@ -85,9 +89,13 @@ function LoginPage() {
             onPress={async () => {
               setIsLoading(true)
               if (UserEmail != "" && UserPassword != "") {
-                axios
+
+                var validData=passwordValidator(UserPassword);
+                
+                if(validData==''){
+                  axios
                   .post(
-                    "https://ebuy-backend.onrender.com"+"/auth/?UserEmail=" +
+                    BaseUrl+"/auth/?UserEmail=" +
                       UserEmail +
                       "&UserPassword=" +
                       UserPassword,
@@ -155,6 +163,10 @@ function LoginPage() {
                       text2: "Something went wrong!",
                     });
                   });
+                }else{
+                  Alert.alert(validData);
+                }
+                
               } else {
                 setIsLoading(false)
                 Toast.show({

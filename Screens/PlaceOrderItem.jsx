@@ -18,7 +18,7 @@ const navigation=useNavigation();
                 backgroundColor: "white",
 
                 padding: 10,
-                marginBottom:5,
+                // marginBottom:5,
               }}
              onPress={()=>{
               navigation.push("ProductView", { data: data })

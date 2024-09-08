@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHandler, StyleSheet, Text, View } from "react-native";
+import { BackHandler, StatusBar, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import moment from "moment/moment";
 import { useEffect } from "react";
@@ -9,7 +9,10 @@ import { useState } from "react";
 import ProItem from "./ProItem";
 import PlaceOrderItem from "./PlaceOrderItem";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Icon2 from "react-native-vector-icons/Entypo";
 import { TouchableOpacity } from "react-native";
+import { useTheme } from "./ThemeContext";
+import Loading from "./Loading";
 
 // TODO: Start from this page
 
@@ -17,7 +20,10 @@ const OrderPage = ({ route }) => {
   const navigation = useNavigation();
   const [Product, setProduct] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [isAddressLoading, setIsAddressLoading] = useState(true);
   const [quantityC, setQuantityC] = useState(1);
+  const isDark = useTheme();
+  const [Address, setAddress] = useState("");
 
   const backAction = () => {
     Alert.alert(
@@ -51,10 +57,40 @@ const OrderPage = ({ route }) => {
       )
       .then(function (response) {
         const da = response.data.value;
-        console.log(da[0]);
+        // console.log(da[0]);
         setProduct(da[0]);
 
         setIsLoading(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const getAddress = async () => {
+    setIsAddressLoading(true);
+    axios
+      .post(
+        "https://ebuy-backend.onrender.com" + "/auth/address",
+        {
+          UserEmail: route.params.Email,
+          authKey: route.params.authKey,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+        }
+      )
+      .then(function (response) {
+        const da = response.data;
+        if (da.status == 103) {
+          setAddress(da.address);
+          console.log(da.address);
+          setIsAddressLoading(false);
+        } else {
+          console.log("Failed to get Address" + da.status);
+        }
       })
       .catch(function (error) {
         console.log(error);
@@ -79,6 +115,13 @@ const OrderPage = ({ route }) => {
 
   useEffect(() => {
     getProducts();
+    getAddress();
+
+    navigation.addListener("focus", () => {
+      console.log("Address refreshed");
+      getAddress();
+    });
+
     const bacHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
@@ -88,16 +131,21 @@ const OrderPage = ({ route }) => {
   }, []);
 
   return isLoading ? (
-    <Text>Loading</Text>
+    <Loading />
   ) : (
     <View style={styles.container}>
+      <StatusBar
+        backgroundColor={isDark ? "black" : "white"}
+        barStyle={isDark ? "light-content" : "dark-content"}
+      />
       <View style={{ flex: 1 }}>
         <Text
           style={{
             fontSize: 18,
             fontWeight: 600,
-            marginHorizontal: 10,
-            marginVertical: 20,
+            paddingHorizontal: 10,
+            paddingVertical: 20,
+            backgroundColor: "white",
           }}
         >
           Place order
@@ -148,20 +196,116 @@ const OrderPage = ({ route }) => {
           </View>
         </View>
 
-        <View>
-          <Text>Address</Text>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            // height: "20%",
+            borderRadius: 10,
+            marginHorizontal: 5,
+            backgroundColor: "white",
+            marginTop: 7,
+            paddingVertical: 10,
+          }}
+        >
+          {isAddressLoading ? (
+            <Loading />
+          ) : (
+            <View>
+              {Address.length == 0 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("AddAddressScreen", {
+                      authKey: route.params.authKey,
+                      Email: route.params.Email,
+                    });
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Icon name="plus" size={12} style={{ marginRight: 5 }} />
+                    <Text style={{}}>Add Address</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Icon2 name="location" size={20} style={{ margin: 20 }} />
+                  <View style={{ flex: 1 }}>
+                    <Text size={15} style={{ fontWeight: 600 }}>
+                      {Address.address}
+                    </Text>
+                    <Text
+                      style={{ fontSize: 12, fontWeight: 600, color: "grey" }}
+                    >
+                      {Address.name}
+                    </Text>
+                    <Text
+                      style={{ fontSize: 12, fontWeight: 600, color: "grey" }}
+                    >
+                      {Address.number}
+                    </Text>
+                  </View>
+                  <Icon2
+                    name="chevron-small-right"
+                    size={20}
+                    style={{ margin: 15 }}
+                  />
+                </View>
+              )}
+            </View>
+          )}
         </View>
 
-        <View style={{backgroundColor: "white",marginTop:20,padding:10}}>
-          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-          <Text>Product Price  </Text>
-          <Text>LKR:{Product.productPrice*quantityC}</Text>
+        <View
+          style={{
+            backgroundColor: "white",
+            marginTop: 20,
+            padding: 10,
+            borderRadius: 10,
+            marginHorizontal: 5,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: 600, marginBottom: 10 }}>
+            Order Summery
+          </Text>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>Product Price </Text>
+            <Text>LKR: {Product.productPrice * quantityC}</Text>
           </View>
-        
-        <Text>Discount Precentage {Product.discountPercentage} %</Text>
-        <Text>After Discount  LKR:{(((Product.productPrice * (100 - Product.discountPercentage)) /100) *quantityC).toFixed(2)}</Text>
-        <Text>Delivery Charges LKR: {500} </Text>
-        <Text>Total Price LKR: {((((Product.productPrice * (100 - Product.discountPercentage)) /100) *quantityC)+500).toFixed(2)} </Text>
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>After Discount </Text>
+            <Text>
+              - LKR:{" "}
+              {(
+                ((Product.productPrice * Product.discountPercentage) / 100) *
+                quantityC
+              ).toFixed(2)}
+            </Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>Delivery Charges </Text>
+            <Text>LKR: {500}</Text>
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text>Total Price </Text>
+            <Text>
+              LKR:{" "}
+              {(
+                ((Product.productPrice * (100 - Product.discountPercentage)) /
+                  100) *
+                  quantityC +
+                500
+              ).toFixed(2)}
+            </Text>
+          </View>
         </View>
       </View>
       <View
@@ -171,10 +315,11 @@ const OrderPage = ({ route }) => {
           <Text style={{ fontSize: 18, fontWeight: 600, marginLeft: 10 }}>
             {"LKR : " +
               (
-                (((Product.productPrice * (100 - Product.discountPercentage)) /
+                ((Product.productPrice * (100 - Product.discountPercentage)) /
                   100) *
-                quantityC
-              )+500).toFixed(2)}
+                  quantityC +
+                500
+              ).toFixed(2)}
           </Text>
         </View>
         <TouchableOpacity
@@ -187,7 +332,7 @@ const OrderPage = ({ route }) => {
             height: 40,
           }}
           onPress={async () => {
-            Alert.alert("Order Processing","Please wait a moment")
+            Alert.alert("Order Processing", "Please wait a moment");
             // setIsLoading(true);
             // openDialog(true);
             // navigation.navigate("OrderScreen", {
@@ -217,6 +362,7 @@ const OrderPage = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor:'white',
     // display:flex,
     flexDirection: "column",
   },

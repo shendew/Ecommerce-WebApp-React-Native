@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Dimensions, FlatList, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import ProItem from './ProItem';
 
-import SliderBox from 'react-native-image-slider-box';
+// import SliderBox from 'react-native-image-slider-box';
 import { useNavigation } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from 'react-native-vector-icons/Feather';

@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigation } from "@react-navigation/native";
 import {
   Button,
@@ -6,136 +7,23 @@ import {
   Modal,
   StatusBar,
   TouchableOpacity,
+  StyleSheet,
+  Dimensions, Text, View ,
+  Alert,
+  FlatList,ScrollView
 } from "react-native";
-import React from "react";
-import { Dimensions, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-const { width, height } = Dimensions.get("window");
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
-import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { Alert } from "react-native";
-import { useState } from "react";
-import Loading from "./Loading";
-import { Dialog } from "react-native-elements";
-import { BlurView } from "expo-blur";
-import { useEffect } from "react";
-import { FlatList } from "react-native";
-import ReviewItem from "./ReviewItem";
-import { Rating } from "react-native-ratings";
-import { StyleSheet } from "react-native";
-import { BaseUrl } from "../Utils/Constrains";
+import { Rating } from 'react-native-ratings';
 
-// TODO: Add reviews
-
-function ProductViewScreen({ route }) {
-  const [auth, setAuth] = useState("");
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [qtyDialog, setQtyDialog] = useState(false);
-  const [quantityC, setQuantityC] = useState(1);
-  const navigation = useNavigation();
-  const [ratings, setRatings] = useState(0);
-
-  
-
-  const getAuthToken = async (type) => {
-    await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
-      setAuth(a);
-      await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
-        setEmail(e);
-        // if (type == "cart") {
-        //   addcar(e, a);
-        // } else if (type == "order") {
-
-        // }
-
-        // return a;
-        console.log(a,e);
-      });
-    });
-  };
-
-  const openDialog = () => {
-    setQtyDialog(true);
-  };
-
-  const calcRatings = () => {
-    var rat = 0;
-    const itemC = route.params.data.reviews.length;
-    if(itemC==0){
-      setRatings(0);
-      console.log(0);
-    }else{
-      
-
-      route.params.data.reviews.map((value, index, array) => {
-        rat = rat + value.Rating;
-      });
-      setRatings(rat / itemC);
-      console.log(rat / itemC);
-    }
-      
-    
-  };
-
-  const addcar = async (e, a) => {
-    // console.log(e + a);
-    axios
-      .put(
-        BaseUrl + "/auth/cart",
-        {
-          UserEmail: e,
-          authKey: a,
-          productID: route.params.data.productID,
-          QTY: 1,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-          },
-        }
-      )
-      .then(function (response) {
-        setIsLoading(false);
-        const da = response.data;
-        if (da.status == 103) {
-          Toast.show({
-            type: "success",
-            text1: "Success",
-            text2: "Item added to cart",
-          });
-          console.log("Success");
-        } else {
-          console.log("Failed to update" + da.status);
-        }
-      })
-      .catch(function (error) {
-        setIsLoading(false);
-        console.log(error);
-      });
-  };
-
-  useEffect(() => {
-    getAuthToken();
-    calcRatings();
-    console.log(route.params.data.thumbnail)
-  }, []);
-
-  return (
-    <View
-      style={{ flex:1,flexDirection: "column" }}
-    >
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
-      {isLoading ? (
-        <Loading />
-        
-      ) : (
-        <View style={{flex:1}}>
-          <View
+const TestScreen = ({route}) => {
+    return (
+        <View style={{flex:1,backgroundColor:'red'}}>
+            <View style={{flex:1,backgroundColor:'red'}}>
+         <View
             style={{
               width: "100%",
               height: "8%",
@@ -181,7 +69,8 @@ function ProductViewScreen({ route }) {
               }}
             >
               <Text style={{ fontSize: 18, fontWeight: 600 }}>
-                {route.params.data.productTitle}
+                {/* {route.params.data.productTitle} */}
+                Test
               </Text>
               <View
                 style={{
@@ -241,7 +130,7 @@ function ProductViewScreen({ route }) {
                 imageSize={30}
                 fractions={1}
                 showRating
-                startingValue={ratings}
+                // startingValue={ratings}
                 style={{ marginBottom: 10 }}
               />
               {
@@ -333,78 +222,10 @@ function ProductViewScreen({ route }) {
             </TouchableOpacity>
           </View>
         </View>
-      )}
-      <Toast />
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={qtyDialog}
-        onRequestClose={() => setQtyDialog}
-      >
-        <BlurView
-          intensity={100}
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              width: "80%",
-              borderRadius: 10,
-              padding: 10,
-              paddingVertical: 20,
-              flexDirection: "column",
-            }}
-          >
-            <Text>Select the Quantity</Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                alignItems: "center",
-              }}
-            >
-              <Icon
-                name="minus"
-                size={20}
-                color="black"
-                onPress={() => {
-                  setQuantityC((old) => (old == 1 ? old : old - 1));
-                }}
-              />
-              <Text style={{ marginVertical: 30, alignSelf: "center" }}>
-                {quantityC}
-              </Text>
-              <Icon
-                name="plus"
-                size={20}
-                color="black"
-                onPress={() => {
-                  setQuantityC((old) => old + 1);
-                }}
-              />
-            </View>
-
-            <Button
-              title="Buy"
-              onPress={() => {
-                setQtyDialog(false);
-                navigation.navigate("OrderScreen", {
-                  productID: route.params.data.productID,
-                  authKey: auth,
-                  Email: email,
-                  quantity: quantityC,
-                });
-              }}
-            />
-          </View>
-        </BlurView>
-      </Modal>
-
-      
-    </View>
-  );
+        </View>
+    );
 }
 
+const styles = StyleSheet.create({})
 
-export default ProductViewScreen;
+export default TestScreen;

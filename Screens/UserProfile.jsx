@@ -1,0 +1,207 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { BaseUrl } from "../Utils/Constrains";
+import axios from "axios";
+import Icon from "react-native-vector-icons/Feather";
+import { useNavigation } from "@react-navigation/native";
+
+const UserProfile = () => {
+  const [auth, setAuth] = useState("");
+  const [email, setEmail] = useState("");
+  const [user, setUser] = useState([]);
+
+  const navigation=useNavigation();
+
+  const getAuthToken = async (type) => {
+    await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
+      setAuth(a);
+      await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
+        setEmail(e);
+        getAddress(a, e);
+        // if (type == "cart") {
+        //   addcar(e, a);
+        // } else if (type == "order") {
+
+        // }
+
+        // return a;
+        console.log(a, e);
+      });
+    });
+  };
+
+  const getAddress = async (a, e) => {
+    axios
+      .post(
+        BaseUrl + "/auth/user",
+        {
+          UserEmail: e,
+          authKey: a,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+        }
+      )
+      .then(function (response) {
+        const da = response.data;
+        if (da.status == 103) {
+          setUser(da.value);
+        } else {
+          console.log("Failed to get Address" + da.status);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getAuthToken();
+  }, []);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={{ backgroundColor: "white", borderRadius: 15, padding: 10 }}>
+        {/* top Profile */}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{}}>
+            <Image
+              source={{ uri: user.UserImage }}
+              style={{ height: 70, aspectRatio: 1, borderRadius: 100 }}
+            />
+            <Icon
+              name="camera"
+              size={17}
+              color={"grey"}
+              style={{
+                alignSelf: "flex-end",
+                position: "absolute",
+                bottom: 7,
+                right: -3,
+              }}
+            />
+          </View>
+          <View style={{ flex: 1, paddingLeft: 10 }}>
+            <Text style={{ fontSize: 25, fontWeight: 500 }}>
+              {user.UserFirstName + " " + user.UserLastName}
+            </Text>
+            <Text style={{ marginLeft: 5, fontSize: 12, color: "grey" }}>
+              {2} favourit items {5} pending reviews
+            </Text>
+          </View>
+          <Icon name="settings" size={25} />
+        </View>
+
+        {/* order panel */}
+        <View
+          style={{ marginTop: 30, borderRadius: 15, backgroundColor: "white" }}
+        >
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <Text style={{ fontSize: 17, fontWeight: 500 }}>My Orders</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <Text style={{ fontSize: 13 }}>View all Orders &gt;</Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: 15,
+            }}
+          >
+            <TouchableOpacity
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name="package" size={35} color={"darkorange"} />
+              <Text style={{ fontSize: 13, marginTop: 5 }}>To Ship</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name="package" size={35} color={"darkorange"} />
+              <Text style={{ fontSize: 13, marginTop: 5 }}>To Receive</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name="package" size={35} color={"darkorange"} />
+              <Text style={{ fontSize: 13, marginTop: 5 }}>To Review</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon name="package" size={35} color={"darkorange"} />
+              <Text style={{ fontSize: 13, marginTop: 5 }}>To Return</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+
+      {/* middle pannel */}
+
+      <View>
+        <TouchableOpacity onPress={()=>navigation.push("wheel")}>
+            <Text>Spin</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* bottom pannel */}
+      <View
+        style={{
+          padding: 10,
+          marginTop: 20,
+          flexDirection: "row",
+          backgroundColor: "white",
+          justifyContent: "space-around",
+        }}
+      >
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <Icon name="phone" size={35} color={"black"} />
+          <Text>Contact us</Text>
+        </TouchableOpacity>
+        
+
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <Icon name="mail" size={35} color={"black"} />
+          <Text>My notifications</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <Icon name="message-square" size={35} color={"black"} />
+          <Text>My reviews</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ alignItems: "center", justifyContent: "center" }}
+        >
+          <Icon name="info" size={35} color={"black"} />
+          <Text>Learn more</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({});
+
+export default UserProfile;

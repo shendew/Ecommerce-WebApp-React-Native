@@ -6,7 +6,6 @@ import {
   NavigationContainer,
   useNavigation,
   NavigationActions,
-  
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -19,44 +18,46 @@ import Category from "./Category";
 
 import HomeCaregoryItem from "./HomeCaregoryItem";
 import * as React from "react";
-import {
-  useAuth,
-  useUpdateAuth,
-} from "./AuthContext";
+import { useAuth, useUpdateAuth } from "./AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProductViewScreen from "./ProductViewScreen";
 import SearchScreen from "./SearchScreen";
-import Icon2 from 'react-native-vector-icons/Feather';
-import { useTheme,useUpdateTheme } from "./ThemeContext";
+import Icon2 from "react-native-vector-icons/Feather";
+import { useTheme, useUpdateTheme } from "./ThemeContext";
 import Theme from "./Theme";
 import OrderPage from "./OrderPage";
-
+import AddAddress from "./AddAddress";
+import TestScreen from "./TestScreen";
+import UserProfile from "./UserProfile";
+import LuckeySpinner from "./LuckeySpinner";
+import OtpVerificationScreen from "./OtpVerificationScreen";
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
 
 function AuthNavigation() {
   const authHandler = useUpdateAuth();
-  const [isLoading,setIsLoading]=React.useState(true);
-  
+  const [isLoading, setIsLoading] = React.useState(true);
 
-  const isDark=useTheme();
+  const isDark = useTheme();
   // const [isDark,setIsDark]=useState(false);
-  const themeHandler=useUpdateTheme();
+  const themeHandler = useUpdateTheme();
 
   const getAuthToken = async () => {
     try {
-        const value = await AsyncStorage.getItem('AUTH_TOKEN');
-        {value !== null? authHandler(true):authHandler(false)}
-        setIsLoading(false);
-      } catch (e) {
-        authHandler(false);
-        setIsLoading(false);
+      const value = await AsyncStorage.getItem("AUTH_TOKEN");
+      {
+        value !== null ? authHandler(true) : authHandler(false);
       }
+      setIsLoading(false);
+    } catch (e) {
+      authHandler(false);
+      setIsLoading(false);
+    }
   };
 
-  React.useEffect((()=>{
-        getAuthToken();
-    }),[]);
+  React.useEffect(() => {
+    getAuthToken();
+  }, []);
 
   function StackNav() {
     const Stack = createNativeStackNavigator();
@@ -75,16 +76,25 @@ function AuthNavigation() {
             <Stack.Screen name="Draw" component={DrawerNav} />
             <Stack.Screen name="HomePage" component={HomePage} />
             <Stack.Screen name="CategoryViewPage" component={Category} />
-            <Stack.Screen name="HomeCategoryItem" component={HomeCaregoryItem} />
-            <Stack.Screen name="ProductView" component={ProductViewScreen}/>
+            <Stack.Screen
+              name="HomeCategoryItem"
+              component={HomeCaregoryItem}
+            />
+            <Stack.Screen name="ProductView" component={ProductViewScreen} />
             <Stack.Screen name="MyCart" component={Cart} />
-            <Stack.Screen name="SearchScreens" component={SearchScreen}/>
-            <Stack.Screen name="OrderScreen" component={OrderPage}/>
+            <Stack.Screen name="SearchScreens" component={SearchScreen} />
+            <Stack.Screen name="OrderScreen" component={OrderPage} />
+            <Stack.Screen name="AddAddressScreen" component={AddAddress} />
+            <Stack.Screen name="TestScreen" component={TestScreen} />
+            <Stack.Screen name="UserProfileScreen" component={UserProfile} />
+            <Stack.Screen name="wheel" component={LuckeySpinner} />
+
           </>
         ) : (
           <>
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="SignIn" component={Register} />
+            <Stack.Screen name="OTPVeri" component={OtpVerificationScreen} />
           </>
         )}
       </Stack.Navigator>
@@ -93,17 +103,40 @@ function AuthNavigation() {
 
   function DrawerNav() {
     const Drawer = createDrawerNavigator();
-    const navigation=useNavigation();
-  
+    const navigation = useNavigation();
+
     return (
       <Drawer.Navigator
         initialRouteName="HomePage"
         screenOptions={{
-          headerStyle: {backgroundColor:isDark?"#7c0a0a":"white",},
+          headerStyle: { backgroundColor: isDark ? "#7c0a0a" : "white" },
           headerTitle: "E-Buy Lk",
           headerTitleAlign: "center",
-          headerTintColor:isDark?"white":"black",
-          headerRight:()=>{ return (<Icon2 name="shopping-cart" size={20}  color={isDark?"white":"black"} onPress={()=>{navigation.navigate("My Cart")}} style={{marginRight:10}}/>)}
+          headerTintColor: isDark ? "white" : "black",
+          headerRight: () => {
+            return (
+              <View style={{flexDirection:'row'}}>
+                <Icon2
+                  name="shopping-cart"
+                  size={20}
+                  color={isDark ? "white" : "black"}
+                  onPress={() => {
+                    navigation.navigate("My Cart");
+                  }}
+                  style={{ marginRight: 10 }}
+                />
+                <Icon2
+                  name="user"
+                  size={20}
+                  color={isDark ? "white" : "black"}
+                  onPress={() => {
+                    navigation.navigate("UserProfileScreen");
+                  }}
+                  style={{ marginRight: 10 ,marginLeft:5}}
+                />
+              </View>
+            );
+          },
         }}
       >
         <Drawer.Screen name="Home" component={HomePage} />
@@ -114,11 +147,7 @@ function AuthNavigation() {
 
   return (
     <NavigationContainer>
-      {isLoading?
-      <Text></Text>
-      :
-      <StackNav />
-      }
+      {isLoading ? <Text></Text> : <StackNav />}
     </NavigationContainer>
   );
 }

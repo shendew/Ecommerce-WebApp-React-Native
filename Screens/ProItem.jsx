@@ -15,18 +15,25 @@ export default function ProItem({ data }) {
   const navigation=useNavigation();
 
   const calcRatings=()=>{
-    var rat=0;
-    const itemC=data.reviews.length;
-    if(itemC==0){
-      setRatings(0)
+
+    if(data.reviews){
+      var rat=0;
+      const itemC=data.reviews.length;
+      if(!data.reviews||itemC==0){
+        setRatings(0)
+      }else{
+        data.reviews.map((value, index, array) => {
+        rat=rat+value.Rating;
+      })
+      
+        setRatings(rat/itemC)
+      
+      
+      }
     }else{
-      data.reviews.map((value, index, array) => {
-      rat=rat+value.Rating;
-      console.log(value)
-    })
-    setRatings(rat/itemC)
-    console.log(rat/itemC)
+      setRatings(0)
     }
+    
       
     
     

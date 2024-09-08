@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
+  Dimensions,
   FlatList,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -9,25 +11,32 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import debounce from "lodash.debounce";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import ProItem from "./ProItem";
 import axios from "axios";
-
+import { BaseUrl } from "../Utils/Constrains";
+import Loading from "./Loading";
+const { width, height } = Dimensions.get("window");
 
 const SearchScreen = ({ route }) => {
   const [searchTxt, setSearchTxt] = useState(text);
   const [Products, setProducts] = useState([]);
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const { text } = route.params;
 
-
   const getProducts = async (sText) => {
+    console.log("got")
+    setIsLoading(true);
     axios
-      .get("https://ebuy-backend.onrender.com"+"/api/products",{params:{q:sText}})
+      .get(BaseUrl + "/api/search", { params: { keyword: sText } })
       .then(function (response) {
-        setProducts(response.data);
+        // console.log(response.data.value[0].productTitle);
+        setProducts(response.data.value);
+        setIsLoading(false);
       })
       .catch(function (error) {
         console.log(error);
@@ -37,16 +46,18 @@ const SearchScreen = ({ route }) => {
   useEffect(() => {
     setSearchTxt(text);
     getProducts(text);
+    console.log("refreshed")
   }, []);
 
-  const handleSearch = (txt) => {
-    setSearchTxt(txt);
-  };
+  const updateQ=()=>{
+    getProducts(searchTxt);
+  }
 
-
+  const debounceText = debounce(updateQ,200);
+  
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
       <View
         style={{
@@ -79,43 +90,60 @@ const SearchScreen = ({ route }) => {
         >
           Search
         </Text>
-        {/* <Icon2 name="shopping-cart" size={30} color="black" onPress={()=>{navigation.push("MyCart")}}/> */}
       </View>
       <View style={{ flexDirection: "column", alignItems: "center" }}>
         <TextInput
           style={styles.searchBox}
           placeholder="Search any Product.."
           placeholderTextColor={"#606060"}
-          onChangeText={(txt) => handleSearch(txt)}
+          onChangeText={(txt)=>{
+            
+            
+
+            setSearchTxt(txt);
+            
+            debounceText()
+          }
+        }
           value={searchTxt}
         />
       </View>
-      <FlatList
-        style={{height:'100%'}}
-        data={Products}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              key={item.productID}
-              onPress={() => {
-                navigation.push("ProductView", { data: item });
-              }}
-              style={{
-                flexGrow: 1,
-                width: "40%",
-                backgroundColor: "#ffffff",
-                marginHorizontal: 5,
-                borderRadius: 15,
-              }}
-            >
-              <ProItem data={item} />
-            </TouchableOpacity>
-          );
+
+      <View
+        style={{
+          alignSelf: "center",
+          width: "95%",
+          paddingBottom: 50,
+          marginTop: 10,
         }}
-        numColumns={2}
-        scrollEnabled
-        ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-      />
+      >
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <FlatList
+            data={Products}
+            renderItem={({ item }) => {
+              return (
+                <View
+                  key={item.productID}
+                  style={{
+                    flex: 1 / 2,
+                    // flexGrow: 1,
+                    width: width / 2.5,
+                    marginHorizontal: 5,
+                  }}
+                >
+                  <ProItem data={item} />
+                </View>
+              );
+            }}
+            numColumns={2}
+            // columnWrapperStyle={{ flex: 1, justifyContent: "space-around" }}
+            scrollEnabled
+            ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };

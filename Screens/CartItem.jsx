@@ -53,7 +53,7 @@ export default function CartItem({product,index,qty,reFreshStat,auth,email}) {
                 deleteCar(qty[index].productID)
               }}/>
               <View
-                style={{ borderBottomColor: "black", borderBottomWidth: 1 ,flexDirection:'row',paddingBottom:5}}
+                style={{  borderBottomWidth: 1 ,flexDirection:'row',paddingBottom:5}}
               >
                 <Image height={100} width={undefined} style={{aspectRatio:1}} source={{uri:product.thumbnail}}/>
 
