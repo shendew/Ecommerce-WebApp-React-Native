@@ -3,23 +3,32 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { ActivityIndicator, Button, FlatList, SafeAreaView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  FlatList,
+  SafeAreaView,
+  Text,
+  View,
+} from "react-native";
 import CartItem from "./CartItem";
 import axios from "axios";
 import Loading from "./Loading";
+import { BaseUrl } from "../Utils/Constrains";
 
 // import { useReducer } from "react";
-
 
 export default function Cart() {
   const navigation = useNavigation();
   const [auth, setAuth] = useState("");
   const [email, setEmail] = useState("");
   const [Products, setProducts] = useState();
-  const [QTY, setQTY] = useState();
+  // const [QTY, setQTY] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshed, setIsRefreshed] = useState(false);
   // const [ReducerVal, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const refreshStat = (isrefresh) => {
     console.log("updated");
@@ -41,10 +50,9 @@ export default function Cart() {
   };
 
   const getProducts = async ({ e, a }) => {
-
     axios
       .post(
-        "https://ebuy-backend.onrender.com" + "/auth/cart",
+        BaseUrl + "/auth/cart",
         {
           UserEmail: e,
           authKey: a,
@@ -57,15 +65,28 @@ export default function Cart() {
       )
       .then(function (response) {
         const da = response.data.value;
-        setQTY(response.data.cart);
         setProducts(da);
 
         setIsLoading(false);
         setIsRefreshed(false);
+        calcTotalPrice(da);
       })
       .catch(function (error) {
         console.log(error);
       });
+  };
+
+  const calcTotalPrice = (da) => {
+    var tempTotal = 0;
+    da.map((product, index, array) => {
+      tempTotal =
+        tempTotal +
+        ((product.product.productPrice *
+          (100 - product.product.discountPercentage)) /
+          100) *
+          product.cartData.QTY;
+    });
+    setTotalPrice(tempTotal);
   };
 
   useEffect(() => {
@@ -77,21 +98,18 @@ export default function Cart() {
   }, [isRefreshed]);
 
   return isLoading ? (
-    <Loading/>
+    <Loading />
   ) : (
     <SafeAreaView style={{ flex: 1, flexDirection: "column" }}>
       <View style={{ flex: 1 }}>
         <FlatList
           data={Products}
           renderItem={({ item, index }) => {
-            // console.log(item)
-            // console.log();
-            // console.log(QTY)
             return (
               <CartItem
-                product={item}
+                product={item.product}
                 index={index}
-                qty={QTY}
+                qty={item.cartData}
                 auth={auth}
                 email={email}
                 reFreshStat={refreshStat}
@@ -110,7 +128,7 @@ export default function Cart() {
           alignItems: "center",
         }}
       >
-        <Text style={{ fontSize: 20 }}>LKR:3000</Text>
+        <Text style={{ fontSize: 20 }}>LKR:{totalPrice}</Text>
         <Button title="Checkout" onPress={() => {}} />
       </View>
     </SafeAreaView>

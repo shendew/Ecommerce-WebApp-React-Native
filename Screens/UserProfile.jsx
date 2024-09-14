@@ -5,13 +5,17 @@ import { BaseUrl } from "../Utils/Constrains";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import { useUpdateAuth } from "./AuthContext";
 
 const UserProfile = () => {
+  const authHandler = useUpdateAuth();
   const [auth, setAuth] = useState("");
   const [email, setEmail] = useState("");
   const [user, setUser] = useState([]);
+  
 
-  const navigation=useNavigation();
+
+  const navigation = useNavigation();
 
   const getAuthToken = async (type) => {
     await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
@@ -19,14 +23,6 @@ const UserProfile = () => {
       await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
         setEmail(e);
         getAddress(a, e);
-        // if (type == "cart") {
-        //   addcar(e, a);
-        // } else if (type == "order") {
-
-        // }
-
-        // return a;
-        console.log(a, e);
       });
     });
   };
@@ -150,12 +146,74 @@ const UserProfile = () => {
         </View>
       </View>
 
-
       {/* middle pannel */}
 
       <View>
-        <TouchableOpacity onPress={()=>navigation.push("wheel")}>
-            <Text>Spin</Text>
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "space-between",
+            flexDirection: "row",
+            marginVertical: 20,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              margin: 5,
+              padding: 25,
+              borderRadius: 15,
+              backgroundColor: "white",
+            }}
+            onPress={() =>
+              navigation.push("myAddress", { Email: email, authKey: auth })
+            }
+          >
+            <Text style={{ fontWeight: 500, fontSize: 16 }}>My Address</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              flex: 1,
+              margin: 5,
+              padding: 25,
+              borderRadius: 15,
+              backgroundColor: "white",
+            }}
+            onPress={() => navigation.push("myFavs")}
+          >
+            <Text style={{ fontWeight: 500, fontSize: 16 }}>Favourites</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            width: "80%",
+            backgroundColor: "red",
+            alignSelf: "center",
+            padding: 10,
+            borderRadius: 10,
+            alignItems: "center",
+          }}
+          onPress={() => {
+            //update login
+
+            AsyncStorage.removeItem("AUTH_TOKEN")
+              .then(() => {
+                console.log("Token removed successfully");
+                authHandler(false);
+              })
+              .catch((error) => {
+                Alert.alert("Please try again later.");
+                console.error("Error removing token:", error);
+              });
+
+            //update theme
+            // themeHandler(!isDark)
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: 600, fontSize: 17 }}>
+            Logout
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -175,7 +233,6 @@ const UserProfile = () => {
           <Icon name="phone" size={35} color={"black"} />
           <Text>Contact us</Text>
         </TouchableOpacity>
-        
 
         <TouchableOpacity
           style={{ alignItems: "center", justifyContent: "center" }}

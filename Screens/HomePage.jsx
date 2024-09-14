@@ -152,7 +152,7 @@ export default function HomePage() {
         >
           <Image
             source={{
-              uri: "https://convenienceworldmagazine.com.au/wp-content/uploads/2020/10/shutterstock_570190258-scaled.jpg",
+              uri: item.cateImg?item.cateImg:"https://convenienceworldmagazine.com.au/wp-content/uploads/2020/10/shutterstock_570190258-scaled.jpg",
             }}
             style={{ borderRadius: 25, width: 50, height: 50 }}
           />
@@ -201,20 +201,6 @@ export default function HomePage() {
                 color: isDark ? "white" : "black",
               }}
               onPress={() => {
-                //update login
-
-                AsyncStorage.removeItem("AUTH_TOKEN")
-                  .then(() => {
-                    console.log("Token removed successfully");
-                    authHandler(false);
-                  })
-                  .catch((error) => {
-                    Alert.alert("Please try again later.");
-                    console.error("Error removing token:", error);
-                  });
-
-                //update theme
-                // themeHandler(!isDark)
               }}
             >
               All Featured

@@ -13,6 +13,7 @@ import Icon2 from "react-native-vector-icons/Entypo";
 import { TouchableOpacity } from "react-native";
 import { useTheme } from "./ThemeContext";
 import Loading from "./Loading";
+import { BaseUrl } from "../Utils/Constrains";
 
 // TODO: Start from this page
 
@@ -71,7 +72,7 @@ const OrderPage = ({ route }) => {
     setIsAddressLoading(true);
     axios
       .post(
-        "https://ebuy-backend.onrender.com" + "/auth/address",
+        BaseUrl + "/auth/address",
         {
           UserEmail: route.params.Email,
           authKey: route.params.authKey,

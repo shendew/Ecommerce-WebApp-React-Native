@@ -31,6 +31,8 @@ import TestScreen from "./TestScreen";
 import UserProfile from "./UserProfile";
 import LuckeySpinner from "./LuckeySpinner";
 import OtpVerificationScreen from "./OtpVerificationScreen";
+import MyAddress from "./MyAddress";
+import MyFavourites from "./MyFavourites";
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
 
@@ -88,6 +90,8 @@ function AuthNavigation() {
             <Stack.Screen name="TestScreen" component={TestScreen} />
             <Stack.Screen name="UserProfileScreen" component={UserProfile} />
             <Stack.Screen name="wheel" component={LuckeySpinner} />
+            <Stack.Screen name="myAddress" component={MyAddress} />
+            <Stack.Screen name="myFavs" component={MyFavourites} />
 
           </>
         ) : (
