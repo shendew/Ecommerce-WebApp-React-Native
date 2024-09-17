@@ -30,8 +30,7 @@ const MyFavourites = () => {
     axios
       .get(BaseUrl + "/api/products", {
         params: {
-          ReqType: "bycate",
-          category: "Diary",
+          ReqType: "all",
         },
       })
       .then(function (response) {

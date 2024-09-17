@@ -86,8 +86,8 @@ const OrderPage = ({ route }) => {
       .then(function (response) {
         const da = response.data;
         if (da.status == 103) {
-          setAddress(da.address);
-          console.log(da.address);
+          setAddress(da.address[0]);
+          console.log(da.address[0])
           setIsAddressLoading(false);
         } else {
           console.log("Failed to get Address" + da.status);
@@ -100,7 +100,7 @@ const OrderPage = ({ route }) => {
 
   const placeOrder = (async) => {
     const dateAndTime = moment().format("DD/MM/YYYY HH:mm:ss");
-    axios.post("https://ebuy-backend.onrender.com" + "/auth/cart", {
+    axios.post(BaseUrl + "/auth/cart", {
       UserEmail: e,
       authKey: a,
       productID: route.params.data.productID,
@@ -219,6 +219,7 @@ const OrderPage = ({ route }) => {
                     navigation.navigate("AddAddressScreen", {
                       authKey: route.params.authKey,
                       Email: route.params.Email,
+                      type: "add",
                     });
                   }}
                 >
@@ -228,21 +229,28 @@ const OrderPage = ({ route }) => {
                   </View>
                 </TouchableOpacity>
               ) : (
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" ,width:'100%'}} onPress={()=>{
+                  navigation.navigate("AddAddressScreen", {
+                    authKey: route.params.authKey,
+                    Email: route.params.Email,
+                    type: "update",
+                    address: Address,
+                  });
+                }}>
                   <Icon2 name="location" size={20} style={{ margin: 20 }} />
-                  <View style={{ flex: 1 }}>
+                  <View style={{ flex: 1 ,width:'100%'}}>
                     <Text size={15} style={{ fontWeight: 600 }}>
-                      {Address.address}
+                      {Address.Address}
                     </Text>
                     <Text
                       style={{ fontSize: 12, fontWeight: 600, color: "grey" }}
                     >
-                      {Address.name}
+                      {Address.FullName}
                     </Text>
                     <Text
                       style={{ fontSize: 12, fontWeight: 600, color: "grey" }}
                     >
-                      {Address.number}
+                      {Address.Number}
                     </Text>
                   </View>
                   <Icon2
@@ -250,7 +258,7 @@ const OrderPage = ({ route }) => {
                     size={20}
                     style={{ margin: 15 }}
                   />
-                </View>
+                </TouchableOpacity>
               )}
             </View>
           )}

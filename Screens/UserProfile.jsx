@@ -1,18 +1,22 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { BaseUrl } from "../Utils/Constrains";
+import { BaseUrl, Red } from "../Utils/Constrains";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import { useUpdateAuth } from "./AuthContext";
+import Loading from "./Loading";
 
 const UserProfile = () => {
   const authHandler = useUpdateAuth();
   const [auth, setAuth] = useState("");
   const [email, setEmail] = useState("");
   const [user, setUser] = useState([]);
-  
+  const [reviewCount, setReviewCount] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(true);
+
 
 
   const navigation = useNavigation();
@@ -22,12 +26,42 @@ const UserProfile = () => {
       setAuth(a);
       await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
         setEmail(e);
-        getAddress(a, e);
+        await getUser(a, e);
+        await getPrendingReviews(e);
       });
     });
   };
 
-  const getAddress = async (a, e) => {
+  const getPrendingReviews=async(e)=>{
+    axios
+      .get(
+        BaseUrl + "/orders/revcount",
+        {
+          params:{UserEmail: e}
+        },
+        {
+          headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+          },
+        }
+      )
+      .then(function (response) {
+        const da = response.data;
+        if (da.status == 103) {
+          setReviewCount(da.count)
+          if(user){
+            setIsLoading(false)
+          }
+        } else {
+          console.log("Failed to get Review Count" + da.status);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  const getUser = async (a, e) => {
     axios
       .post(
         BaseUrl + "/auth/user",
@@ -45,8 +79,11 @@ const UserProfile = () => {
         const da = response.data;
         if (da.status == 103) {
           setUser(da.value);
+          if(reviewCount){
+            setIsLoading(false)
+          }
         } else {
-          console.log("Failed to get Address" + da.status);
+          console.log("Failed to get User" + da.status);
         }
       })
       .catch(function (error) {
@@ -55,10 +92,14 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
+    navigation.addListener("focus", () => {
+      getAuthToken();
+    });
     getAuthToken();
   }, []);
 
   return (
+    isLoading?<View style={{flex:1}}><Loading/></View>:
     <View style={{ flex: 1 }}>
       <View style={{ backgroundColor: "white", borderRadius: 15, padding: 10 }}>
         {/* top Profile */}
@@ -90,10 +131,13 @@ const UserProfile = () => {
               {user.UserFirstName + " " + user.UserLastName}
             </Text>
             <Text style={{ marginLeft: 5, fontSize: 12, color: "grey" }}>
-              {2} favourit items {5} pending reviews
+              {user?user.UserFaves.length:0} favourit items {reviewCount?reviewCount:0} pending reviews
             </Text>
           </View>
+          <TouchableOpacity onPress={()=>navigation.navigate("ProfileDetails")}>
+
           <Icon name="settings" size={25} />
+          </TouchableOpacity>
         </View>
 
         {/* order panel */}
@@ -104,7 +148,7 @@ const UserProfile = () => {
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <Text style={{ fontSize: 17, fontWeight: 500 }}>My Orders</Text>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => {navigation.navigate("myOrders",{type:'all'})}}>
               <Text style={{ fontSize: 13 }}>View all Orders &gt;</Text>
             </TouchableOpacity>
           </View>
@@ -117,6 +161,7 @@ const UserProfile = () => {
           >
             <TouchableOpacity
               style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => {navigation.navigate("myOrders",{type:-1})}}
             >
               <Icon name="package" size={35} color={"darkorange"} />
               <Text style={{ fontSize: 13, marginTop: 5 }}>To Ship</Text>
@@ -124,6 +169,7 @@ const UserProfile = () => {
 
             <TouchableOpacity
               style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => {navigation.navigate("myOrders",{type:0})}}
             >
               <Icon name="package" size={35} color={"darkorange"} />
               <Text style={{ fontSize: 13, marginTop: 5 }}>To Receive</Text>
@@ -131,6 +177,7 @@ const UserProfile = () => {
 
             <TouchableOpacity
               style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => {navigation.navigate("myOrders",{type:1})}}
             >
               <Icon name="package" size={35} color={"darkorange"} />
               <Text style={{ fontSize: 13, marginTop: 5 }}>To Review</Text>
@@ -138,6 +185,7 @@ const UserProfile = () => {
 
             <TouchableOpacity
               style={{ alignItems: "center", justifyContent: "center" }}
+              onPress={() => {navigation.navigate("myOrders",{type:2})}}
             >
               <Icon name="package" size={35} color={"darkorange"} />
               <Text style={{ fontSize: 13, marginTop: 5 }}>To Return</Text>
@@ -188,7 +236,7 @@ const UserProfile = () => {
         <TouchableOpacity
           style={{
             width: "80%",
-            backgroundColor: "red",
+            backgroundColor: Red,
             alignSelf: "center",
             padding: 10,
             borderRadius: 10,

@@ -35,7 +35,7 @@ export default function ReviewItem({ review }) {
       <Text style={{ marginBottom: 10, color: "grey", marginLeft: 5 }}>
         {review.Body}
       </Text>
-      {review.Image == "noimg" ? (
+      {review.Image == "no-img" ? (
         <></>
       ) : (
         <TouchableOpacity

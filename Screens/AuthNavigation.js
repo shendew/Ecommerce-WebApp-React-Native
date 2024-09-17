@@ -33,6 +33,11 @@ import LuckeySpinner from "./LuckeySpinner";
 import OtpVerificationScreen from "./OtpVerificationScreen";
 import MyAddress from "./MyAddress";
 import MyFavourites from "./MyFavourites";
+import ProfileDetails from "./ProfileDetails";
+import PasswordReset from "./PasswordReset";
+import MyOrders from "./MyOrders";
+import OrderDetails from "./OrderDetails";
+import OrderReview from "./OrderReview";
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
 
@@ -92,6 +97,11 @@ function AuthNavigation() {
             <Stack.Screen name="wheel" component={LuckeySpinner} />
             <Stack.Screen name="myAddress" component={MyAddress} />
             <Stack.Screen name="myFavs" component={MyFavourites} />
+            <Stack.Screen name="ProfileDetails" component={ProfileDetails} />
+            <Stack.Screen name="PasswordRest" component={PasswordReset} />
+            <Stack.Screen name="myOrders" component={MyOrders} />
+            <Stack.Screen name="OrderDetails" component={OrderDetails} />
+            <Stack.Screen name="OrderReview" component={OrderReview} />
 
           </>
         ) : (

@@ -53,7 +53,7 @@ const MyAddress = ({ route }) => {
 
   return (
     <View>
-      <StatusBar backgroundColor={"white"} barStyle={"dark-content"} />
+      {/* <StatusBar backgroundColor={"white"} barStyle={"dark-content"} /> */}
       <View
         style={{
           width: "100%",
