@@ -1,4 +1,5 @@
-package com.ebuysl
+package com.thedevsl.ecommercemobileapp
+//package com.ebuysl
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
@@ -11,7 +12,8 @@ class MainActivity : ReactActivity() {
    * Returns the name of the main component registered from JavaScript. This is used to schedule
    * rendering of the component.
    */
-  override fun getMainComponentName(): String = "ebuysl"
+  //override fun getMainComponentName(): String = "com.ebuysl"
+  override fun getMainComponentName(): String = "com.thedevsl.ecommercemobileapp"
 
   /**
    * Returns the instance of the [ReactActivityDelegate]. We use [DefaultReactActivityDelegate]
