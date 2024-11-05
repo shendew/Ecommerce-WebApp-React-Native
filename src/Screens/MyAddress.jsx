@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Icon2 from "react-native-vector-icons/Entypo";
 import axios from "axios";
 import Loading from "../Utils/Loading";
+import Toast from "react-native-toast-message";
 
 const MyAddress = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +55,6 @@ const MyAddress = ({ route }) => {
 
   return (
     <View>
-      {/* <StatusBar backgroundColor={"white"} barStyle={"dark-content"} /> */}
       <View
         style={{
           width: "100%",
@@ -160,6 +160,7 @@ const MyAddress = ({ route }) => {
           </View>
         )}
       </View>
+      <Toast/>
     </View>
   );
 };

@@ -13,7 +13,7 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import axios from "axios";
-import { BaseUrl, Main } from "../Utils/Constrains";
+import { BaseUrl, LocalBaseUrl, Main } from "../Utils/Constrains";
 // import Loading from "./Loading";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -22,6 +22,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { emptyValidator } from "../Validators/emptyValidator";
 const { height } = Dimensions.get("window");
 import uuid from "react-native-uuid";
+import Toast from "react-native-toast-message";
+import Loading from "../Utils/Loading";
 
 const AddProduct = () => {
   const navigation = useNavigation();
@@ -45,16 +47,11 @@ const AddProduct = () => {
   const [productBrand, setProductBrand] = useState();
 
   const [Categories, setCategories] = useState([]);
+  const [LastId, setLastId] = useState(0);
 
-
-  const data = [
-    { label: "Fruit", value: "1" },
-    { label: "Vegetables", value: "2" },
-    { label: "Meat", value: "3" },
-    { label: "Fish", value: "4" },
-    { label: "Seafood", value: "5" },
-    { label: "Mushroom", value: "6" },
-  ];
+  const delay = ms => new Promise(
+    resolve => setTimeout(resolve, ms)
+  );
 
   const renderItem = (item) => {
     return (
@@ -64,6 +61,16 @@ const AddProduct = () => {
       </View>
     );
   };
+
+  const getLastID=()=>{
+    axios.get(BaseUrl+"/api/last_id")
+    .then((value) => {
+      setLastId(value.data.id)
+    })
+    .catch((value) => {
+      console.log(value)
+    })
+  }
 
   const getCategires = async () => {
     axios
@@ -80,6 +87,8 @@ const AddProduct = () => {
         console.log(err);
       });
   };
+
+
 
   const getAuthToken = async () => {
     setIsLoading(true)
@@ -99,50 +108,61 @@ const AddProduct = () => {
     setcateErr(emptyValidator(value));
     setbrandErr(emptyValidator(productBrand));
 
+
     if (productTitle && productDesc && productPrice && discountPrecentage && productStock>0 && value && productBrand && pickedImage) {
       const formData = new FormData();
       formData.append("UserEmail", e);
       formData.append("authKey", a);
-      formData.append("productID", uuid.v4().toString());
+      formData.append("productID", LastId+1);
 
       formData.append("productTitle", productTitle);
       formData.append("productDescription", productDesc);
       formData.append("productPrice", productPrice);
       formData.append("discountPercentage", discountPrecentage);
-      formData.append("rating", []);
+      formData.append("rating", 0);
       formData.append("stock", productStock);
       formData.append("brand", productBrand);
       formData.append("category", value);
-      // formData.append("thumbnail", pickedImage);
+      formData.append("images", []);
 
-      //   if (pickedImage) {
       formData.append("thumbnail", {
         uri: pickedRawImage.uri,
         name: pickedRawImage.fileName,
-        type: pickedRawImage.mimeType,
+        type:'multipart/form-data'
       });
       formData.append("ImageStatus", true);
-      //   } else {
-      //     formData.append("ImageStatus", false);
-      //   }
+
+
       axios
-        .post(BaseUrl + "/auth/products", formData, {
+        .post(BaseUrl + "/api/products", 
+          formData, 
+          {
           headers: {
-            // "Content-Type": "application/json; charset=UTF-8",
-            //   Accept: 'application/json',
-            "Content-Type": "multipart/form-data",
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
           },
         })
         .then(function (response) {
+          setIsLoading(false);
           const da = response.data;
           if (da.status == 103) {
-            console.log(da.msg);
-            setIsLoading(false);
+            Toast.show({
+              type: "success",
+              text1: "Success",
+              text2: "Product added successfully.",
+            });
+            delay(2000)
+            navigation.goBack()
           } else {
-            console.log("Failed to add review" + da.msg);
-          }
+            Toast.show({
+              type: "error",
+              text1: "Error",
+              text2: "Failed to add product",
+            });          }
         })
         .catch(function (error) {
+          setIsLoading(false);
+
           console.log(error);
         });
     }
@@ -151,16 +171,8 @@ const AddProduct = () => {
   const pickImge = async () => {
     let result = {};
     try {
-
-      // launchCamera();
       const result=await launchImageLibrary()
-      // await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      // result = await ImagePicker.launchImageLibraryAsync({
-      //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      //   allowsEditing: true,
-      //   quality: 0.5,
-      // });
       if (!result.canceled) {
         setPickedRawImage(result.assets[0]);
         console.log(result.assets[0]);
@@ -184,8 +196,9 @@ const AddProduct = () => {
   useEffect(() => {
     // getAuthToken()
     getCategires()
+    getLastID()
   }, []);
-  return (
+  return isLoading?<Loading/>:(
     <View style={{ flex: 1 }}>
       <View
         style={{
@@ -479,6 +492,7 @@ const AddProduct = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <Toast/>
     </View>
   );
 };

@@ -39,6 +39,7 @@ import PasswordReset from "../Screens/PasswordReset";
 import MyOrders from "../Screens/MyOrders";
 import OrderStatus from "../Screens/OrderStatus";
 import CartOrderPage from "../Screens/CartOrderPage";
+import RevChart from "../Screens/RevChart";
 // import OrderWebView from "./OrderWebView";
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
@@ -116,6 +117,8 @@ function AuthNavigation() {
           <>
             <Stack.Screen name="AdminHomePage" component={AdminHome} />
             <Stack.Screen name="AddProduct" component={AddProduct} />
+            <Stack.Screen name="RevChart" component={RevChart} />
+
           </>
         ) : (
           <>

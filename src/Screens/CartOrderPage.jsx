@@ -55,7 +55,6 @@ const CartOrderPage = ({route}) => {
       .toUpperCase();
     paymentObject.hash = hash;
 
-    // console.log(paymentObject);
   };
 
   const paymentObject = {
@@ -127,13 +126,7 @@ const CartOrderPage = ({route}) => {
   };
 
   const processMultiOrder = async pM => {
-    // for (let index = 0; index < route.params.data.length; index++) {
-    //   const item = route.params.data[index];
-    //   const OrderID = uuid.v1();
-    //   const p=item.product;
-    //   const cd=item.cartData;
-    //   await addOrder(OrderID,p.productID,p.productPrice,p.discountPercentage,cd.QTY,pM)
-    // }
+
     await Promise.all(
       route.params.data.map(async (item, index, array) => {
         const OrderID = uuid.v1();

@@ -94,7 +94,6 @@ const OrderReview = ({ route }) => {
       axios
         .post(
           BaseUrl + "/orders/review",
-          // "http://192.168.153.1:3000/orders/review",
           formData,
           {
             headers: {
@@ -133,14 +132,6 @@ const OrderReview = ({ route }) => {
     try {
 
       const result=await launchImageLibrary()
-
-      // await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-      // result = await ImagePicker.launchImageLibraryAsync({
-      //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      //   allowsEditing: true,
-      //   quality: 0.5,
-      // });
       if (!result.canceled) {
         setPickedRawImage(result.assets[0]);
         await saveImage(result.assets[0].uri);

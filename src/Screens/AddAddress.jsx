@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 // import { StatusBar } from "status";
 import { emptyValidator } from "../Validators/emptyValidator";
+import Loading from "../Utils/Loading";
 
 const AddAddress = ({ route }) => {
   const params = route.params;
@@ -158,9 +159,8 @@ const AddAddress = ({ route }) => {
   };
 
   useEffect(() => {}, []);
-  return (
+  return isLoading?<Loading/>:(
     <View style={{ flex: 1, flexDirection: "column" }}>
-      {/* <StatusBar backgroundColor={"white"} barStyle={"dark-content"} /> */}
       <View
         style={{
           width: "100%",
