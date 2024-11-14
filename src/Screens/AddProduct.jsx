@@ -113,7 +113,7 @@ const AddProduct = () => {
       const formData = new FormData();
       formData.append("UserEmail", e);
       formData.append("authKey", a);
-      formData.append("productID", LastId+1);
+      formData.append("productID", parseInt(LastId)+1);
 
       formData.append("productTitle", productTitle);
       formData.append("productDescription", productDesc);

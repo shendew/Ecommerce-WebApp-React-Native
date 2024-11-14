@@ -516,7 +516,7 @@ const OrderPage = ({route}) => {
 
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={{color: 'black'}}>After Discount </Text>
+              <Text style={{color: 'black'}}>Discount </Text>
               <Text style={{color: 'black'}}>
                 - LKR:{' '}
                 {(

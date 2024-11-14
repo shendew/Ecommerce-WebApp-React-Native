@@ -25,7 +25,6 @@ const OrderItem = ({ order }) => {
           headers: {
             "Content-Type": "application/json; charset=UTF-8",
           },
-          // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
         }
       )
       .then(function (response) {
@@ -110,6 +109,7 @@ const OrderItem = ({ order }) => {
         }}
       >
         <Image
+          // source={{ uri: product.thumbnail }}
           source={{ uri: product.thumbnail }}
           style={{ height: 75, aspectRatio: 1, marginRight: 5 }}
         />

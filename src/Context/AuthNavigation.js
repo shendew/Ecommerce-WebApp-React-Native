@@ -40,6 +40,11 @@ import MyOrders from "../Screens/MyOrders";
 import OrderStatus from "../Screens/OrderStatus";
 import CartOrderPage from "../Screens/CartOrderPage";
 import RevChart from "../Screens/RevChart";
+import AdminOrderPage from "../Screens/AdminOrderPage";
+import AdminOrderDetails from "../Screens/AdminOrderDetails";
+import AdminProductPage from "../Screens/AdminProductPage";
+import AdminProductViewScreen from "../Screens/AdminProductViewScreen";
+import UpdateProduct from "../Screens/UpdateProduct";
 // import OrderWebView from "./OrderWebView";
 
 // https://www.youtube.com/watch?v=bnRIvh6NVqA
@@ -118,6 +123,12 @@ function AuthNavigation() {
             <Stack.Screen name="AdminHomePage" component={AdminHome} />
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="RevChart" component={RevChart} />
+            <Stack.Screen name="SellerOrdersView" component={AdminOrderPage} />
+            <Stack.Screen name="OrderDetails" component={AdminOrderDetails} />
+            <Stack.Screen name="SellerProductsView" component={AdminProductPage} />
+            <Stack.Screen name="ProductView" component={AdminProductViewScreen} />
+            <Stack.Screen name="UpdateProduct" component={UpdateProduct} />
+
 
           </>
         ) : (

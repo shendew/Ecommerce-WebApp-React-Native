@@ -20,6 +20,8 @@ import { BaseUrl, Main } from "../Utils/Constrains";
 import { parseISO, isBefore, isAfter } from "date-fns";
 import { useUpdateAuth } from "../Context/AuthContext";
 
+import logo from'../img/logo.png'
+
 const AdminHome = () => {
   const navigation = useNavigation();
   const authHandler = useUpdateAuth();
@@ -274,12 +276,12 @@ const AdminHome = () => {
               <Text style={{ fontSize: 30, fontWeight: 600 }}>Dashboard</Text>
               </TouchableOpacity>
               <Text style={{ fontSize: 16, color: "rgba(121, 105, 31, 1)" }}>
-                Welcome back, {"shopName"}
+                Welcome back, Ebuy-SL
               </Text>
             </View>
 
             <Image
-              source={{ uri: "shopImage" }}
+              source={logo}
               cachePolicy={"none"}
               style={{
                 width: 70,

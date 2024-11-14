@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useUpdateAuth } from "../Context/AuthContext";
 import Loading from "../Utils/Loading";
 
-Loading
 
 const UserProfile = () => {
   const authHandler = useUpdateAuth();
