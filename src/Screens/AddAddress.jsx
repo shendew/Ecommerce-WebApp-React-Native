@@ -31,7 +31,7 @@ const AddAddress = ({ route }) => {
     country: type == "update" ? params.address.Country : "",
     landmarks: type == "update" ? params.address.Landmarks : "",
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [fnameError, setFNameError] = useState(false);
   const [lnameError, setLNameError] = useState(false);
