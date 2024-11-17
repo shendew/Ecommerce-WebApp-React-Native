@@ -35,6 +35,7 @@ const CartOrderPage = ({route}) => {
   const [isDark, setIsDark] = useState(false);
   const [Address, setAddress] = useState('');
   const [Total, setTotal] = useState(0);
+  const [totalShipping, setTotalShipping] = useState(0);
   const [isCOD, setIsCOD] = useState(true);
 
   const getHash = () => {
@@ -42,7 +43,7 @@ const CartOrderPage = ({route}) => {
       'MTc1MjM2MjUzNjEwNzc4NTM4MDUzNjQ3MzcyODMyMjgzNTc5NzUzOA==';
     let merchantId = '1228394';
     let orderId = 'ItemNo12345';
-    let amount = Total.toFixed(2);
+    let amount = (Total+totalShipping).toFixed(2);
     let hashedSecret = md5(merchantSecret).toString().toUpperCase();
     let amountFormated = parseFloat(amount)
       .toLocaleString('en-us', {minimumFractionDigits: 2})
@@ -54,7 +55,6 @@ const CartOrderPage = ({route}) => {
       .toString()
       .toUpperCase();
     paymentObject.hash = hash;
-
   };
 
   const paymentObject = {
@@ -126,13 +126,12 @@ const CartOrderPage = ({route}) => {
   };
 
   const processMultiOrder = async pM => {
-
     await Promise.all(
       route.params.data.map(async (item, index, array) => {
         const OrderID = uuid.v1();
         const p = item.product;
         const cd = item.cartData;
-        addOrder(
+        await addOrder(
           OrderID,
           p.productID,
           p.productPrice,
@@ -146,7 +145,7 @@ const CartOrderPage = ({route}) => {
     );
   };
 
-  const addOrder = (
+  const addOrder = async (
     orderID,
     productID,
     productPrice,
@@ -154,7 +153,7 @@ const CartOrderPage = ({route}) => {
     quantityC,
     pM,
   ) => {
-    axios
+    await axios
       .post(
         BaseUrl + '/orders/add',
         {
@@ -224,9 +223,8 @@ const CartOrderPage = ({route}) => {
         // addOrder(OrderID,0);
         processMultiOrder(0);
       } else {
-        paymentObject.items = "Multi-Order"+OrderID;
-        paymentObject.amount =
-          '' +Total.toFixed(2);
+        paymentObject.items = 'Multi-Order' + OrderID;
+        paymentObject.amount =  (Total).toFixed(2);
         paymentObject.first_name = Address[0].FName;
         paymentObject.last_name = Address[0].LName;
         paymentObject.email = '';
@@ -262,15 +260,19 @@ const CartOrderPage = ({route}) => {
 
   const calcTotal = () => {
     let temTot = 0;
+    var tempTotalSipping = 0;
+
     route.params.data.map((item, index, array) => {
       temTot =
-        temTot +
+        temTot +500+
         item.cartData.QTY *
           ((item.product.productPrice *
             (100 - item.product.discountPercentage)) /
             100);
+      tempTotalSipping = tempTotalSipping + item.cartData.QTY * 500;
     });
     setTotal(temTot);
+    setTotalShipping(tempTotalSipping);
   };
 
   useEffect(() => {
@@ -508,7 +510,7 @@ const CartOrderPage = ({route}) => {
         }}>
         <View style={{flex: 1, backgroundColor: 'transparent'}}>
           <Text style={{fontSize: 18, fontWeight: 600, marginLeft: 10}}>
-            {'LKR : ' + Total.toFixed(2)}
+            {'LKR : ' + (Total).toFixed(2)}
           </Text>
         </View>
         <TouchableOpacity

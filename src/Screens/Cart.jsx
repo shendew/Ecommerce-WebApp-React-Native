@@ -129,7 +129,9 @@ export default function Cart() {
       >
         <Text style={{ fontSize: 20 }}>LKR:{totalPrice}</Text>
         <Button title="Checkout" onPress={() => {
-          navigation.navigate("CartOrderPage",{data:Products,Email:email,authKey:auth})
+          if(Products.length>0){
+            navigation.navigate("CartOrderPage",{data:Products,Email:email,authKey:auth})
+          }
         }} />
       </View>
     </SafeAreaView>

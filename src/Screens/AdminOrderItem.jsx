@@ -242,7 +242,7 @@ const AdminOrderItem = ({order,isUpdated}) => {
           <View></View>
         )}
       </View>
-      <Toast/>
+      <Toast setRef={Toast.setRootRef}/>
       <Modal transparent animationType="fade" visible={isDelShow}>
         <TouchableOpacity
           onPress={() => {

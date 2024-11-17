@@ -154,6 +154,8 @@ const AddProduct = () => {
             delay(2000)
             navigation.goBack()
           } else {
+            console.log(da.status);
+
             Toast.show({
               type: "error",
               text1: "Error",
@@ -165,6 +167,13 @@ const AddProduct = () => {
 
           console.log(error);
         });
+    }else{
+      setIsLoading(false)
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Product Photos Required!",
+      });          
     }
   };
 

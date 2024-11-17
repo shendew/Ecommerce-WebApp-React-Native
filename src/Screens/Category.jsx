@@ -21,7 +21,53 @@ function Category({route}) {
     const [Products, setProducts] = useState([]);
     const [isLoading,setIsLoading] = useState(false);
 
-    
+    const getAllProducts = async () => {
+      axios
+        .get(
+          BaseUrl+"/api/products",
+          {
+            params: { ReqType: "all" },
+          },
+          {
+            headers: {
+              "Content-Type": "application/json; charset=UTF-8",
+            },
+            // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
+          }
+        )
+        .then(function (response) {
+          const da = response.data.value;
+  
+          if (da.length % 2 == 1) {
+            const it = {
+              productID: null,
+              productTitle: "Pepsi - 1.50 l",
+              productDescription:
+                "Pepsi-the bold, refreshing, robust cola *Images for illustration purposes only. Product received may vary.",
+              productPrice: 400,
+              discountPercentage: 25,
+              rating: 4.69,
+              stock: 94,
+              brand: "Pepsi",
+              category: "Beverages",
+              thumbnail:
+                "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+              images: [
+                "https://cargillsonline.com/VendorItems/MenuItems/BV91207_1.jpg",
+                "https://cargillsonline.com/VendorItems/MenuItems/BV91207_2.jpg",
+              ],
+            };
+            const UpdatedArray = [...da, it];
+            setProducts(UpdatedArray);
+          } else {
+            setProducts(da);
+          }
+          setIsLoading(false)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
 
     const getProducts = async () => {
       setIsLoading(true)
@@ -62,7 +108,11 @@ function Category({route}) {
     };
 
     useEffect(()=>{
-      getProducts();
+      if(route.params.data.cateID==0){
+        getAllProducts()
+      }else{
+        getProducts();
+      }
     },[])
 
   return (

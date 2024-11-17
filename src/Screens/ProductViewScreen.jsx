@@ -6,6 +6,7 @@ import {
   Modal,
   StatusBar,
   TouchableOpacity,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React from 'react';
 import {Dimensions, Text, View} from 'react-native';
@@ -42,52 +43,108 @@ function ProductViewScreen({route}) {
   const [ratings, setRatings] = useState(0);
   const [saved, setSaved] = useState(false);
 
+  function QtyModel(){
+
+    return(
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={qtyDialog}
+        onRequestClose={() => setQtyDialog}>
+          <View style={{flex:1,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,0.5)'}} o>
+
+          
+        
+          <View
+            style={{
+              backgroundColor: 'white',
+              width: '80%',
+              borderRadius: 10,
+              padding: 10,
+              // paddingVertical: 20,
+              flexDirection: 'column',
+            }}>
+              <TouchableOpacity onPress={()=>setQtyDialog(false)}>
+              <Icon name='close' size={20} style={{alignSelf:'flex-end',marginHorizontal:10,color:'red'}}/>
+              </TouchableOpacity>
+            <Text>Select the Quantity</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+              }}>
+              <Icon
+                name="minus"
+                size={20}
+                color="black"
+                onPress={() => {
+                  setQuantityC(old => (old == 1 ? old : old - 1));
+                }}
+              />
+              <Text style={{marginVertical: 30, alignSelf: 'center'}}>
+                {quantityC}
+              </Text>
+              <Icon
+                name="plus"
+                size={20}
+                color="black"
+                onPress={() => {
+                  setQuantityC(old => old + 1);
+                }}
+              />
+            </View>
+
+            <Button
+              title="Continue"
+              onPress={() => {
+                setQtyDialog(false);
+                addcar(email, auth);
+                setIsLoading(true);
+              }}
+            />
+            </View>
+            </View>
+      </Modal>
+    )
+  }
 
   const getAuthToken = async type => {
     await AsyncStorage.getItem('AUTH_TOKEN').then(async a => {
       setAuth(a);
       await AsyncStorage.getItem('USER_EMAIL').then(async e => {
         setEmail(e);
-        getFavs(a,e)
-        // if (type == "cart") {
-        //   addcar(e, a);
-        // } else if (type == "order") {
-
-        // }
-
-        // return a;
+        getFavs(a, e);
       });
     });
   };
 
-
   const getFavs = async (a, e) => {
     axios
       .post(
-        BaseUrl + "/auth/fav",
+        BaseUrl + '/auth/fav',
         {
           UserEmail: e,
           authKey: a,
         },
         {
           headers: {
-            "Content-Type": "application/json; charset=UTF-8",
+            'Content-Type': 'application/json; charset=UTF-8',
           },
-        }
+        },
       )
       .then(function (response) {
         const da = response.data;
         if (da.status == 103) {
-
-          const u=da.favs
-          u.map((item)=>{
-            if(item.productID===route.params.data.productID){
-              console.log(item.productID)
-              setSaved(true)
+          const u = da.favs;
+          u.map(item => {
+            if (item.productID === route.params.data.productID) {
+              console.log(item.productID);
+              setSaved(true);
             }
-          })
+          });
         } else {
-          console.log("Failed to get User" + da.status);
+          console.log('Failed to get User' + da.status);
         }
       })
       .catch(function (error) {
@@ -113,97 +170,15 @@ function ProductViewScreen({route}) {
       // console.log(rat / itemC);
     }
   };
-  
 
-  const addFav=async()=>{
+  const addFav = async () => {
     axios
-    .put(
-      BaseUrl + '/auth/fav',
-      {
-        UserEmail: email,
-        authKey: auth,
-        productID: route.params.data.productID,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
-    .then(function (response) {
-      setIsLoading(false);
-      const da = response.data;
-      if (da.status == 103) {
-        setSaved(!saved)
-
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Item added to favourite',
-        });
-        console.log('Success');
-      } else {
-        console.log('Failed to update' + da.status);
-      }
-    })
-    .catch(function (error) {
-      setIsLoading(false);
-      console.log(error);
-    });
-  }
-
-  const delFav=async()=>{
-    
-    
-    axios
-    .delete(
-      BaseUrl + '/auth/fav',
-      {
-        data:{
-
+      .put(
+        BaseUrl + '/auth/fav',
+        {
           UserEmail: email,
           authKey: auth,
           productID: route.params.data.productID,
-        }
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
-    .then(function (response) {
-      setIsLoading(false);
-      const da = response.data;
-      if (da.status == 103) {
-        setSaved(!saved)
-
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Item added to favourite',
-        });
-        console.log('Success');
-      } else {
-        console.log('Failed to update' + da.status);
-      }
-    })
-    .catch(function (error) {
-      setIsLoading(false);
-      console.log(error);
-    });
-  }
-
-  const addcar = async (e, a) => {
-    // console.log(e + a);
-    axios
-      .put(
-        BaseUrl + '/auth/cart',
-        {
-          UserEmail: e,
-          authKey: a,
-          productID: route.params.data.productID,
-          QTY: 1,
         },
         {
           headers: {
@@ -215,7 +190,85 @@ function ProductViewScreen({route}) {
         setIsLoading(false);
         const da = response.data;
         if (da.status == 103) {
-          setSaved(!saved)
+          setSaved(!saved);
+
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'Item added to favourite',
+          });
+          console.log('Success');
+        } else {
+          console.log('Failed to update' + da.status);
+        }
+      })
+      .catch(function (error) {
+        setIsLoading(false);
+        console.log(error);
+      });
+  };
+
+  const delFav = async () => {
+    axios
+      .delete(
+        BaseUrl + '/auth/fav',
+        {
+          data: {
+            UserEmail: email,
+            authKey: auth,
+            productID: route.params.data.productID,
+          },
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        },
+      )
+      .then(function (response) {
+        setIsLoading(false);
+        const da = response.data;
+        if (da.status == 103) {
+          setSaved(!saved);
+
+          Toast.show({
+            type: 'success',
+            text1: 'Success',
+            text2: 'Item added to favourite',
+          });
+          console.log('Success');
+        } else {
+          console.log('Failed to update' + da.status);
+        }
+      })
+      .catch(function (error) {
+        setIsLoading(false);
+        console.log(error);
+      });
+  };
+
+  const addcar = async (e, a) => {
+    // console.log(e + a);
+    axios
+      .put(
+        BaseUrl + '/auth/cart',
+        {
+          UserEmail: e,
+          authKey: a,
+          productID: route.params.data.productID,
+          QTY: quantityC,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        },
+      )
+      .then(function (response) {
+        setIsLoading(false);
+        const da = response.data;
+        if (da.status == 103) {
+          setSaved(!saved);
 
           Toast.show({
             type: 'success',
@@ -330,19 +383,18 @@ function ProductViewScreen({route}) {
                 <Text style={{color: 'black', fontSize: 16}}>
                   {route.params.data.discountPercentage + '% OFF'}
                 </Text>
-                <TouchableOpacity style={{
-                      position: 'absolute',
-                      elevation: 1,
-                      top: 5,
-                      right: 0,
-                    }}
-                    onPress={()=>{
-                      saved?delFav():addFav()
-
-                    }}
-                    >
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    elevation: 1,
+                    top: 5,
+                    right: 0,
+                  }}
+                  onPress={() => {
+                    saved ? delFav() : addFav();
+                  }}>
                   <IconMat
-                    name={saved?"favorite":"favorite-border"}
+                    name={saved ? 'favorite' : 'favorite-border'}
                     // color="red"
                     size={25}
                   />
@@ -407,8 +459,9 @@ function ProductViewScreen({route}) {
                 await getAuthToken('cart');
                 console.log(auth);
                 console.log(email);
-                addcar(email, auth);
-                setIsLoading(true);
+                
+                openDialog(true);
+
                 // getAuthToken("cart").then((value) => {
                 //   console.log(auth)
                 //   console.log(email)
@@ -454,70 +507,8 @@ function ProductViewScreen({route}) {
         </View>
       )}
       <Toast />
-
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={qtyDialog}
-        onRequestClose={() => setQtyDialog}>
-        <BlurView
-          blurType="light"
-          blurAmount={100}
-          reducedTransparencyFallbackColor="white"
-          // intensity={100}
-          style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              width: '80%',
-              borderRadius: 10,
-              padding: 10,
-              paddingVertical: 20,
-              flexDirection: 'column',
-            }}>
-            <Text>Select the Quantity</Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                alignItems: 'center',
-              }}>
-              <Icon
-                name="minus"
-                size={20}
-                color="black"
-                onPress={() => {
-                  setQuantityC(old => (old == 1 ? old : old - 1));
-                }}
-              />
-              <Text style={{marginVertical: 30, alignSelf: 'center'}}>
-                {quantityC}
-              </Text>
-              <Icon
-                name="plus"
-                size={20}
-                color="black"
-                onPress={() => {
-                  setQuantityC(old => old + 1);
-                }}
-              />
-            </View>
-
-            <Button
-              title="Buy"
-              onPress={() => {
-                setQtyDialog(false);
-                navigation.navigate('OrderScreen', {
-                  productID: route.params.data.productID,
-                  authKey: auth,
-                  Email: email,
-                  quantity: quantityC,
-                });
-              }}
-            />
-          </View>
-        </BlurView>
-      </Modal>
+      <QtyModel/>
+      
     </View>
   );
 }
