@@ -130,7 +130,7 @@ function LoginPage() {
                             .then(() => {
                               
                               console.log("Token,Email saved successfully");
-                              if(UserEmail=="td@gmail.com"){
+                              if(UserEmail==process.env.Admin_Email){
                                 AsyncStorage.setItem(
                                   "USER_TYPE",
                                   "true"
