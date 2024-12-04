@@ -89,9 +89,6 @@ function LoginPage() {
               setIsLoading(true)
               if (UserEmail != "" && UserPassword != "") {
 
-                var validData=passwordValidator(UserPassword);
-                
-                if(validData==''){
                   axios
                   .post(
                     BaseUrl+"/auth/?UserEmail=" +
@@ -176,9 +173,7 @@ function LoginPage() {
                       text2: "Something went wrong!",
                     });
                   });
-                }else{
-                  Alert.alert(validData);
-                }
+                
                 
               } else {
                 setIsLoading(false)

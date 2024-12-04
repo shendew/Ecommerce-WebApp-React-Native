@@ -41,8 +41,8 @@ const OrderPage = ({route}) => {
 
   const getHash = () => {
     let merchantSecret =
-      'MTc1MjM2MjUzNjEwNzc4NTM4MDUzNjQ3MzcyODMyMjgzNTc5NzUzOA==';
-    let merchantId = '1228394';
+      process.env.Merchent_Secret;
+    let merchantId = process.env.Merchent_ID;
     let orderId = 'ItemNo12345';
     let amount = (
       ((Product.productPrice * (100 - Product.discountPercentage)) / 100) *
@@ -66,7 +66,7 @@ const OrderPage = ({route}) => {
 
   const paymentObject = {
     sandbox: true, // true if using Sandbox Merchant ID
-    merchant_id: '1228394', // Replace your Merchant ID
+    merchant_id: process.env.Merchent_ID, // Replace your Merchant ID
     notify_url: '',
     order_id: 'ItemNo12345',
     items: '',

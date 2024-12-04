@@ -174,8 +174,10 @@ function Register() {
                 });
               } else {
                 if (validator.isEmail(UserEmail)) {
-                  if (UserPassword.length >= 8) {
-                    if (FirstName != "" && LastName != "") {
+                  var validData=passwordValidator(UserPassword);
+                
+                  if(validData==''){
+                                        if (FirstName != "" && LastName != "") {
 
                         sendOTP();                      
                     } else {
@@ -187,11 +189,12 @@ function Register() {
                     }
                   } else {
                     setIsPassWrong(true);
-                    Toast.show({
-                      type: "error",
-                      text1: "Error",
-                      text2: "Password need atleast 8 characters",
-                    });
+                    Alert.alert(validData);
+                    // Toast.show({
+                    //   type: "error",
+                    //   text1: "Error",
+                    //   text2: "Password need atleast 8 characters",
+                    // });
                   }
                 } else {
                   setIsEmailWrong(true);

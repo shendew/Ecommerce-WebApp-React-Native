@@ -37,11 +37,11 @@ const OrderItem = ({ order }) => {
       });
   };
 
-  const getAuthToken = async () => {
+  const getAuthToken = async (type) => {
     setIsLoading(true)
     await AsyncStorage.getItem("AUTH_TOKEN").then(async (a) => {
       await AsyncStorage.getItem("USER_EMAIL").then(async (e) => {
-        cancelOrder(e, a);
+        type==0?cancelOrder(e, a):updateDelivery(e,a)
       });
     });
   };
@@ -77,6 +77,52 @@ const OrderItem = ({ order }) => {
   };
 
   
+  const updateDelivery = (e, a) => {
+    axios
+      .post(
+        BaseUrl + '/orders/recv',
+        {
+          UserEmail: e,
+          authKey: a,
+          orderID: order.orderID,
+          
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        },
+      )
+      .then(function (response) {
+        const da = response.data;
+        setIsLoading(false);
+
+        if (da.status == 103) {
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Order updated successfully.",
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Order updated failed.",
+          });
+          console.log('Order updated failed.' + da.status);
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        oast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Order updated failed.",
+        });
+        setIsLoading(false);
+      });
+  };
+
 
   
 
@@ -169,9 +215,25 @@ const OrderItem = ({ order }) => {
         >
           <Text style={{ fontWeight: 600, color: "black" }}>Review</Text>
         </TouchableOpacity>
-      ) : (
-        <View></View>
-      )}
+      ) : order.orderStatus == 0? (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "white",
+            borderColor:'black',
+            borderWidth:1,
+            padding: 10,
+            borderRadius: 10,
+            width: "40%",
+            alignItems: "center",
+            alignSelf: "flex-end",
+            marginBottom: 5,
+            elevation:3
+          }}
+          onPress={()=>getAuthToken(1)}
+        >
+          <Text style={{ fontWeight: 600, color: "black" }}>Received</Text>
+        </TouchableOpacity>
+      ):<View></View>}
       <Modal transparent animationType="fade" visible={isShow}>
         <TouchableOpacity
           onPress={() => {
@@ -222,7 +284,7 @@ const OrderItem = ({ order }) => {
                     alignItems: "center",
                     alignSelf: "flex-end",
                   }}
-                  onPress={() => getAuthToken()}
+                  onPress={() => getAuthToken(0)}
                 >
                   <Text style={{ color: "white" }}>Yes</Text>
                 </TouchableOpacity>

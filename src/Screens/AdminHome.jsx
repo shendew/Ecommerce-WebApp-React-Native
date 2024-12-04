@@ -16,6 +16,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {FloatingAction} from 'react-native-floating-action';
 import Icon from 'react-native-vector-icons/Feather';
+import IconM from 'react-native-vector-icons/MaterialIcons';
+
+import {
+  MenuContext,
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  MenuProvider,
+} from 'react-native-popup-menu';
 
 import {BaseUrl, Main} from '../Utils/Constrains';
 import {parseISO, isBefore, isAfter} from 'date-fns';
@@ -263,8 +273,7 @@ const AdminHome = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
             }}>
-              
-            <Icon
+            {/* <Icon
               name={'more-vertical'}
               size={25}
               style={{
@@ -273,22 +282,23 @@ const AdminHome = () => {
                 top: 0,
                 elevation: 2,
                 marginTop: 10,
-                color:'black'
+                color: 'black',
               }}
-            />
+            /> */}
             <View style={{}}>
               <TouchableOpacity
-                onPress={() => {
-                  AsyncStorage.removeItem('AUTH_TOKEN')
-                    .then(() => {
-                      console.log('Token removed successfully');
-                      authHandler(false);
-                    })
-                    .catch(error => {
-                      Alert.alert('Please try again later.');
-                      console.error('Error removing token:', error);
-                    });
-                }}>
+                // onPress={() => {
+                //   AsyncStorage.removeItem('AUTH_TOKEN')
+                //     .then(() => {
+                //       console.log('Token removed successfully');
+                //       authHandler(false);
+                //     })
+                //     .catch(error => {
+                //       Alert.alert('Please try again later.');
+                //       console.error('Error removing token:', error);
+                //     });
+                // }}
+                >
                 <Text style={{fontSize: 30, fontWeight: 600}}>Dashboard</Text>
               </TouchableOpacity>
               <Text style={{fontSize: 16, color: 'rgba(121, 105, 31, 1)'}}>
@@ -305,9 +315,21 @@ const AdminHome = () => {
                 borderRadius: 35,
                 backgroundColor: 'white',
                 elevation: 3,
-                marginEnd:20
+                marginEnd: 20,
               }}
             />
+          <IconM name="logout" size={30} onPress={() => {
+                  AsyncStorage.removeItem('AUTH_TOKEN')
+                    .then(() => {
+                      console.log('Token removed successfully');
+                      authHandler(false);
+                    })
+                    .catch(error => {
+                      Alert.alert('Please try again later.');
+                      console.error('Error removing token:', error);
+                    });
+                }}/>
+
           </View>
 
           <View
@@ -655,6 +677,22 @@ const styles = StyleSheet.create({
   boldText: {
     fontWeight: 600,
   },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 50,
+    backgroundColor: '#ecf0f1',
+  },
+  button:{
+  backgroundColor: 'lightblue',
+  padding: 15,
+  borderRadius: 5,
+  textalign: 'center',
+  display: 'flex',
+  fontsize: 16,
+  margin: 4,
+  }
 });
 
 export default AdminHome;
