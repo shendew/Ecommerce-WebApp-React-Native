@@ -112,7 +112,6 @@ const OrderPage = ({route}) => {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          // params: { UserEmail: 'asi@gmail.com' , UserPassword:'Pakaya123_Updated' },
         },
       )
       .then(function (response) {
